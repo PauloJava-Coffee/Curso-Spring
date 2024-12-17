@@ -15,8 +15,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.transaction.annotation.Transactional;
+import java.util.List;
 
 /**
  *
@@ -28,6 +30,13 @@ public class ProdutoController {
 
     @Autowired
     ProdutosRepository repository;
+    
+    
+    @GetMapping
+    public List<Produtos> findByNome(@RequestParam("nome") String nome){
+        
+        return repository.findByNome(nome);
+    }
 
     @GetMapping("/{id}")
     private Produtos findById(@PathVariable("id") String id) {

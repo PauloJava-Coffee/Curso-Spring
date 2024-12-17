@@ -7,11 +7,13 @@ package com.aluno.produtosapi.repositories;
 
 import com.aluno.produtosapi.entities.Produtos;
 import org.springframework.data.jpa.repository.JpaRepository;
-
+import java.util.List;
 /**
  *
  * @author barbo
  */
 public interface ProdutosRepository extends JpaRepository<Produtos,String> {
+    
+   List<Produtos> findByNome(String nome);
 
 }
