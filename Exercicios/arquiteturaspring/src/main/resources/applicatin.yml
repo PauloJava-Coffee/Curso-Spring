@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: arquiteturaspring
+jpa:
+  show-sql: true
+main:
+  lazy-initialization: false 
+  
+  
+app:
+  config:
+    variavel: x
+    
