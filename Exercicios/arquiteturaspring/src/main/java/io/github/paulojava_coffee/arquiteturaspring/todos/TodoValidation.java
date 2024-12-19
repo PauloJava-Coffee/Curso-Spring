@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 public class TodoValidation {
     
     
-    private TodoRepository repository;
+    private  TodoRepository repository;
 
     public TodoValidation(TodoRepository repository) {
         this.repository = repository;
@@ -30,7 +30,7 @@ public class TodoValidation {
         
     }
     
-    public Boolean descricaoJaexiste(String descricao){
-        return repository.existsByDescricao(descricao);
+    private Boolean descricaoJaexiste(String descricao){
+        return  repository.existsByDescricao(descricao);
     }
 }
