@@ -7,13 +7,27 @@ package io.github.paulojava_coffee.arquiteturaspring;
 import io.github.paulojava_coffee.arquiteturaspring.todos.TodoEntity;
 import io.github.paulojava_coffee.arquiteturaspring.todos.TodoValidation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.WebApplicationContext;
 
 /**
  *
  * @author barbo
  */
 @Component
+@Scope("singleton")// VALOR PADRÃO , A MESMA ISTÂNCIA FUNCIONA PARA TODOS OS USUÁRIOS
+//@Scope(BeanDefinition.SCOPE_PROTOTYPE) UMA INSTÂNCIA PARA CADA USUÁRIOS
+
+//@Scope(BeanDefinition.SCOPE_PROTOTYPE) UMA INSTÂNCIA PARA CADA USUÁRIOS
+
+//@Scope(WebApplicationContext.SCOPE_REQUEST)
+//@Scope("request") O BEAN SÓ EXISTE DURANTE UMA REQUISIÇÃO
+
+//@Scope("session") O BEAN GUARDA ESTÁDO DURANTE A SESSÃO DE UM USUÁRIO
+
+//@Scope("application")  O BEAN GUARDA ESTÁDO DURANTE A SESSÃO DE VÁRIOS USUÁRIOS
 public class BeanGenrenciado {
 
     /*
