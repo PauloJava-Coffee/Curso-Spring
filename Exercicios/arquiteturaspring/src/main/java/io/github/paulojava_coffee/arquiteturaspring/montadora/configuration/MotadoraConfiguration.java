@@ -8,6 +8,7 @@ import io.github.paulojava_coffee.arquiteturaspring.montadora.Motor;
 import io.github.paulojava_coffee.arquiteturaspring.montadora.TipoMotor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 
 /**
  *
@@ -22,17 +23,18 @@ public class MotadoraConfiguration {
      */
     @Bean
     public Motor motorAspirado() {
-         var motor = new Motor();
+        var motor = new Motor();
         motor.setCavalos(120);
         motor.setCilindros(4);
         motor.setModelo("xPTO-0");
         motor.setLitragem(2.0);
         motor.setTipo(TipoMotor.TURBO);
-        
+
         return motor;
     }
 
     @Bean(name = "motorEletrico")
+    @Primary
     public Motor motorEletrico() {
         var motor = new Motor();
         motor.setCavalos(110);

@@ -8,11 +8,12 @@ import io.github.paulojava_coffee.arquiteturaspring.montadora.Chave;
 import io.github.paulojava_coffee.arquiteturaspring.montadora.HondaHRV;
 import io.github.paulojava_coffee.arquiteturaspring.montadora.Motor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
+//import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
 
 /**
  *
@@ -23,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class TesteFabricaController {
 
     @Autowired
-    @Qualifier("motorEletrico")
+    @Turbo
     Motor motor;
 
     @PostMapping
