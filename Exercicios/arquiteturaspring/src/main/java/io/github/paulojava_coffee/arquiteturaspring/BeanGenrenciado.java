@@ -8,16 +8,18 @@ import io.github.paulojava_coffee.arquiteturaspring.todos.TodoEntity;
 import io.github.paulojava_coffee.arquiteturaspring.todos.TodoValidation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.WebApplicationContext;
+
 
 /**
  *
  * @author barbo
  */
-@Component
-@Scope("singleton")// VALOR PADRÃO , A MESMA ISTÂNCIA FUNCIONA PARA TODOS OS USUÁRIOS
+
+
 //@Scope(BeanDefinition.SCOPE_PROTOTYPE) UMA INSTÂNCIA PARA CADA USUÁRIOS
 
 //@Scope(BeanDefinition.SCOPE_PROTOTYPE) UMA INSTÂNCIA PARA CADA USUÁRIOS
@@ -28,6 +30,9 @@ import org.springframework.web.context.WebApplicationContext;
 //@Scope("session") O BEAN GUARDA ESTÁDO DURANTE A SESSÃO DE UM USUÁRIO
 
 //@Scope("application")  O BEAN GUARDA ESTÁDO DURANTE A SESSÃO DE VÁRIOS USUÁRIOS
+@Component
+@Scope("singleton")// VALOR PADRÃO , A MESMA ISTÂNCIA FUNCIONA PARA TODOS OS USUÁRIOS
+@Lazy//Faz com que  bean só seja injetado no momento em que ele for necessário
 public class BeanGenrenciado {
 
     /*
@@ -42,6 +47,7 @@ public class BeanGenrenciado {
     obs: alternativa menos indicado segundo o meu professor
     
      */
+    
     @Autowired
     private TodoValidation validar;
 

@@ -22,6 +22,9 @@ public class ArquiteturaspringApplication {
                 //Definindo o perfil de configuração
                 builder.profiles("teste");
                 
+                //Definindo o padrão para @Lazy
+                builder.lazyInitialization(true);
+                
                 //Rodando a aplicação
                 builder.run(args);
                 
