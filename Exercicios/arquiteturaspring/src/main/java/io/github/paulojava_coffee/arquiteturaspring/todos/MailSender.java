@@ -7,13 +7,13 @@ package io.github.paulojava_coffee.arquiteturaspring.todos;
 import org.springframework.stereotype.Component;
 
 /**
- *
+ * 
  * @author barbo
  */
 @Component
 public class MailSender {
     public void enviar(String mensagem){
-        System.out.println("Enviado email: " + mensagem);
+        System.out.println("Email enviado: " + mensagem);
     }
     
 }
