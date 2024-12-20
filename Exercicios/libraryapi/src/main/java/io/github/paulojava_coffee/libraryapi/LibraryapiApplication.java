@@ -10,4 +10,8 @@ public class LibraryapiApplication {
 		SpringApplication.run(LibraryapiApplication.class, args);
 	}
 
+        
+        /*
+        docker run --name librarydb -p 5432:5432 -e POSTGRES_PASSWORD=postgres -e POSTGRES_USER=postgres -e POSTGRES_DB=library  postgres:16.3
+        */
 }
