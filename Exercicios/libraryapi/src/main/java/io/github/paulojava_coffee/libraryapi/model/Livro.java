@@ -13,6 +13,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.UUID;
 import lombok.Data;
@@ -42,9 +43,11 @@ public class Livro {
     private GeneroLivro genero;
 
     @Column(name = "preco", precision = 18, scale = 2)
-    private Double preco;
+    private BigDecimal preco;
 
     @ManyToOne
     @JoinColumn
     private Autor autor;
+    
+  
 }
