@@ -11,22 +11,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class LibraryapiApplication {
 
     public static void main(String[] args) {
-       var contexto =  SpringApplication.run(LibraryapiApplication.class, args);
-       AutorRepository autorRepository = contexto.getBean(AutorRepository.class);
-       
-       salvarRegistro(autorRepository);
-    }
+        SpringApplication.run(LibraryapiApplication.class, args);
 
-    public static void salvarRegistro(AutorRepository repository) {
-        Autor autor = new Autor();
-        autor.setNome("José");
-        autor.setNacionalidade("BR");
-        autor.setDataNascimento(LocalDate.of(1995, 1 , 13));
-        
-       var autorSalvo = repository.save(autor);
-       
-        System.out.println("Autor Salvo: " + autorSalvo);
-        
     }
 
 }
