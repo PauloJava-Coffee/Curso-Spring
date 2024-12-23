@@ -6,6 +6,8 @@ jpa:
 main:
   lazy-initialization: false 
   
+  jpa:
+    show-sql: true
   
 app:
   config:
