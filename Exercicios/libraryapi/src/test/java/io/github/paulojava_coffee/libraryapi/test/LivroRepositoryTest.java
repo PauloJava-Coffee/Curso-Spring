@@ -13,6 +13,7 @@ import jakarta.transaction.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.Month;
+import java.util.List;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,13 +36,13 @@ public class LivroRepositoryTest {
     void salvarTest() {
         Livro livro = new Livro();
 
-        livro.setIsbn("6668-9090");
+        livro.setIsbn("7619-7561");
         livro.setPreco(BigDecimal.valueOf(100));
-        livro.setDataPublicacao(LocalDate.of(1999, 8, 14));
-        livro.setGenero(GeneroLivro.ROMANCE);
-        livro.setTitulo("OI");
+        livro.setDataPublicacao(LocalDate.of(1987, 4, 4));
+        livro.setGenero(GeneroLivro.CIENCIA);
+        livro.setTitulo("Zumbi");
 
-        Autor autor = autorRepository.findById(UUID.fromString("be17d3f1-ecc4-48b4-bb8c-154319a2007f")).orElse(null);
+        Autor autor = autorRepository.findById(UUID.fromString("0e71c6e7-252e-487a-abcc-ba40e6c8fa89")).orElse(null);
         livro.setAutor(autor);
 
         repository.save(livro);
@@ -123,16 +124,77 @@ public class LivroRepositoryTest {
 
         repository.deleteById(livro.getId());
     }
+
     @Test
     @Transactional
-    void buscarLivroTest(){
+    void buscarLivroTest() {
         UUID id = UUID.fromString("6d056888-f7de-4da0-be0a-35c6e05b9c61");
         Livro livro = repository.findById(id).orElse(null);
-        
+
         System.out.println("Livro: ");
         System.out.println(livro.getTitulo());
         System.out.println("Autor: ");
         System.out.println(livro.getAutor().getNome());
     }
 
+    @Test
+    void findByTituloTest() {
+        List<Livro> livros = repository.findByTitulo("O livro da capa vermelha");
+        livros.forEach(System.out::println);
+    }
+
+    @Test
+    void findByIsbnTest() {
+        List<Livro> livros = repository.findByIsbn("7894-9090");
+        livros.forEach(System.out::println);
+    }
+
+    @Test
+    void findByTituloAndPrecoTest() {
+        var titulo = "O livro da capa vermelha";
+        var preco = BigDecimal.valueOf(204);
+
+        List<Livro> livros = repository.findByTituloAndPreco(titulo, preco);
+        livros.forEach(System.out::println);
+    }
+
+    @Test
+    void ListarTodos() {
+        repository.listarTodos().forEach(System.out::println);
+    }
+
+    @Test
+    void listarAutores() {
+        repository.listarAutores().forEach(System.out::println);
+    }
+
+    @Test
+    void listarTitulosDistintosTest() {
+        repository.listarTitulosDistintos().forEach(System.out::println);
+    }
+
+    @Test
+    void listarGeneroOnNacionalidade() {
+        repository.listarGeneroOnNacionalidade().forEach(System.out::println);
+    }
+
+    @Test
+    void ListarPorGeneroEFiltro() {
+        repository.findByGenero(GeneroLivro.CIENCIA, "titulo").forEach(System.out::println);
+    }
+
+    @Test
+    void ListarPorGeneroEFiltroPositional() {
+        repository.findByGeneroPositional(GeneroLivro.CIENCIA, "titulo").forEach(System.out::println);
+    }
+
+    @Test
+    void deleteByGenero() {
+        repository.deleteByGenero(GeneroLivro.BIOGRAFIA);
+    }
+
+    @Test
+    void UpdatedataPublicacao() {
+        repository.updadeDataPublicacao(LocalDate.of(1995, 7, 14));
+    }
 }

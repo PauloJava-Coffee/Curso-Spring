@@ -19,12 +19,14 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.UUID;
 import lombok.Data;
+import lombok.ToString;
 
 
 /**
  *
  * @author barbo
  */
+@ToString(exclude = "autor")
 @Data
 @Entity
 public class Livro {

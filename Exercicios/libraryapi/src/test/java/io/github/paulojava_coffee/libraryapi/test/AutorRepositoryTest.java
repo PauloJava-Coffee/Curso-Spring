@@ -9,7 +9,6 @@ import io.github.paulojava_coffee.libraryapi.model.GeneroLivro;
 import io.github.paulojava_coffee.libraryapi.model.Livro;
 import io.github.paulojava_coffee.libraryapi.repository.AutorRepository;
 import io.github.paulojava_coffee.libraryapi.repository.LivroRepository;
-import jakarta.transaction.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -19,6 +18,7 @@ import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  *
@@ -83,24 +83,24 @@ public class AutorRepositoryTest {
     @Test
     public void deleteTest() {
         var id = UUID.fromString("f125689e-c239-4d76-b091-4cb9928154a9");
-        var maria = repository.findById(id).get();
-        repository.delete(maria);
+        var autor = repository.findById(id).get();
+        repository.delete(autor);
     }
 
     @Test
     void salvarAutorComLivrosTest() {
 
         Autor autor = new Autor();
-        autor.setNome("Bruno");
-        autor.setNacionalidade("BR");
-        autor.setDataNascimento(LocalDate.of(1987, 8, 15));
+        autor.setNome("Valéria");
+        autor.setNacionalidade("Uru");
+        autor.setDataNascimento(LocalDate.of(1994, 8, 3));
 
         //Livro
         Livro livro = new Livro();
 
-        livro.setIsbn("7894-9090");
+        livro.setIsbn("76321-7465");
         livro.setPreco(BigDecimal.valueOf(204));
-        livro.setDataPublicacao(LocalDate.of(2017, 8, 14));
+        livro.setDataPublicacao(LocalDate.of(2011, 2, 7));
         livro.setGenero(GeneroLivro.CIENCIA);
         livro.setTitulo("Salvo Com autor certo");
         livro.setAutor(autor);
@@ -110,7 +110,7 @@ public class AutorRepositoryTest {
         livro2.setPreco(BigDecimal.valueOf(204));
         livro2.setDataPublicacao(LocalDate.of(2017, 8, 14));
         livro2.setGenero(GeneroLivro.MISTERIO);
-        livro2.setTitulo("Salvo 2 com autor  certo");
+        livro2.setTitulo("O livro da capa vermelha");
         livro2.setAutor(autor);
 
         autor.setLivros(new ArrayList<>());
@@ -119,8 +119,21 @@ public class AutorRepositoryTest {
 
         repository.save(autor);
 
+        //Usado para salvar uma lista de registros
         //livrorepository.saveAll(autor.getLivros());
-
     }
+
+    @Test
+    void listarLivrosAutor() {
+        var id = UUID.fromString("0e71c6e7-252e-487a-abcc-ba40e6c8fa89");
+        var autor = repository.findById(id).get();
+
+        //Buscar livros
+        List<Livro> livros = livrorepository.findByAutor(autor);
+        autor.setLivros(livros);
+        autor.getLivros().forEach(System.out::println);
+    }
+    
+    
 
 }

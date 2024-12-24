@@ -8,6 +8,7 @@ package io.github.paulojava_coffee.libraryapi.model;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -26,7 +27,7 @@ import lombok.ToString;
  *
  * @author barbo
  */
-@ToString
+@ToString(exclude = {"livros"})
 @Getter
 @Setter
 @AllArgsConstructor
@@ -48,7 +49,8 @@ public class Autor {
     @Column(name = "nacionalidade", length = 50, nullable = false)
     private String nacionalidade;
     
-   @OneToMany(mappedBy = "autor", cascade = CascadeType.ALL)
+   @OneToMany(mappedBy = "autor", fetch = FetchType.LAZY ,
+           cascade = CascadeType.ALL)
     //@Transient
     private List<Livro> livros;
     
