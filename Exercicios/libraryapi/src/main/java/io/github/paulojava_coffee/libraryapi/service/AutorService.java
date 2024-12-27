@@ -7,6 +7,7 @@ package io.github.paulojava_coffee.libraryapi.service;
 import io.github.paulojava_coffee.libraryapi.model.Autor;
 import io.github.paulojava_coffee.libraryapi.repository.AutorRepository;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import org.springframework.stereotype.Service;
 
@@ -27,8 +28,8 @@ public class AutorService {
         return repository.save(autor);
     }
     
-     public Autor findById(UUID id){
-        return repository.findById(id).orElse(null);
+     public Optional<Autor> findById(UUID id){
+        return repository.findById(id);
     }
     
     public List<Autor> buscarAutores(){

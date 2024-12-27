@@ -6,6 +6,7 @@ package io.github.paulojava_coffee.libraryapi.dto;
 
 import io.github.paulojava_coffee.libraryapi.model.Autor;
 import java.time.LocalDate;
+import java.util.UUID;
 
 /**
  *
@@ -14,6 +15,7 @@ import java.time.LocalDate;
 //DATA TRANSFER OBJECT
 
 public record AutorDTO(
+        UUID id,
         String nome,
         LocalDate dataNascimento, 
         String nacionalidade) {

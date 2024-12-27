@@ -9,6 +9,7 @@ import io.github.paulojava_coffee.libraryapi.model.Autor;
 import io.github.paulojava_coffee.libraryapi.service.AutorService;
 import java.net.URI;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -21,7 +22,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-
 /**
  *
  * @author santa
@@ -31,29 +31,45 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 public class AutorController {
 
     private final AutorService service;
-    
-    public AutorController(AutorService service){
+
+    public AutorController(AutorService service) {
         this.service = service;
-        
+
     }
-    
-    
+
     @PostMapping
-    public ResponseEntity<Void> salvar(@RequestBody AutorDTO autor){
-        var  autorEntidade = autor.mapearParaAutor();
+    public ResponseEntity<Void> salvar(@RequestBody AutorDTO autor) {
+        var autorEntidade = autor.mapearParaAutor();
         service.salvar(autorEntidade);
-        
-       URI location =  ServletUriComponentsBuilder
+
+        URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}")
                 .buildAndExpand(autorEntidade.getId())
                 .toUri();
-                        
+
         return ResponseEntity.created(location).build();
     }
-    
-   @GetMapping("{id}")
-   public Autor buscarAutor(@PathVariable("id") UUID id){
-      return service.findById(id); 
-   }
+
+    @GetMapping("{id}")
+    public ResponseEntity<AutorDTO> obterDetalhes(@PathVariable("id") String id) {
+
+        var idAutor = UUID.fromString(id);
+        Optional<Autor> autorOptional = service.findById(idAutor);
+        
+        if(autorOptional.isPresent()){
+            Autor autor = autorOptional.get();
+            AutorDTO dto = new AutorDTO(autor.getId(), autor.getNome(),autor.getDataNascimento(), autor.getNacionalidade());
+            
+            return ResponseEntity.ok(dto);
+        }else{
+            return ResponseEntity.notFound().build();
+        }
+
+    }
+
+   /* @GetMapping("{id}")
+    public Autor buscarAutor(@PathVariable("id") String id) {
+       return null;
+    }*/
 }
