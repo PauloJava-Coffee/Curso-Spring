@@ -155,6 +155,7 @@ public class LivroRepositoryTest {
         var preco = BigDecimal.valueOf(204);
 
         List<Livro> livros = repository.findByTituloAndPreco(titulo, preco);
+        //repository.findByTituloAndPreco(titulo, preco).forEach(System.out::println);
         livros.forEach(System.out::println);
     }
 
