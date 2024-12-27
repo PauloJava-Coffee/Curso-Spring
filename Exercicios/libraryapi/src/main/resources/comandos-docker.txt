@@ -3,3 +3,6 @@ docker run --name librarydb -p 5432:5432  -e POSTGRES_PASSWORD=postgres -e POSTG
 
 #Rodar pgAdmin 4
 docker run --name pgadmin4  -p 15432:80  -e PGADMIN_DEFAULT_EMAIL=admin@admin.com -e PGADMIN_DEFAULT_PASSWORD=admin -d --network library-network dpage/pgadmin4
+
+#Criando network 
+docker network create library-network
