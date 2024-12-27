@@ -33,19 +33,20 @@ public class LivroRepositoryTest {
 
     @Test
     void salvarTest() {
-        Livro livro = new Livro();
-
-        livro.setIsbn("6668-9090");
-        livro.setPreco(BigDecimal.valueOf(100));
-        livro.setDataPublicacao(LocalDate.of(1999, 8, 14));
-        livro.setGenero(GeneroLivro.ROMANCE);
-        livro.setTitulo("OI");
-
-        Autor autor = autorRepository.findById(UUID.fromString("be17d3f1-ecc4-48b4-bb8c-154319a2007f")).orElse(null);
-        livro.setAutor(autor);
-
-        repository.save(livro);
-
+ 
+       Livro livro = new Livro();
+       
+       livro.setTitulo("Jardin");
+       livro.setDataPublicacao(LocalDate.of(1995, 7, 16));
+       livro.setIsbn("7789-0987");
+       livro.setGenero(GeneroLivro.FICCAO);
+       livro.setPreco(BigDecimal.valueOf(200));
+       
+       
+       Autor autor = autorRepository.findById(UUID.fromString("2d1266d8-d278-4dc6-adac-b6e095016cb9")).orElse(null);
+       livro.setAutor(autor);
+       
+       repository.save(livro);
     }
 
     @Test
@@ -123,12 +124,13 @@ public class LivroRepositoryTest {
 
         repository.deleteById(livro.getId());
     }
+
     @Test
     @Transactional
-    void buscarLivroTest(){
+    void buscarLivroTest() {
         UUID id = UUID.fromString("6d056888-f7de-4da0-be0a-35c6e05b9c61");
         Livro livro = repository.findById(id).orElse(null);
-        
+
         System.out.println("Livro: ");
         System.out.println(livro.getTitulo());
         System.out.println("Autor: ");

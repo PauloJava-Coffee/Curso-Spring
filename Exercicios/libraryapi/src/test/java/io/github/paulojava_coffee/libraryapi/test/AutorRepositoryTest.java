@@ -37,9 +37,9 @@ public class AutorRepositoryTest {
     public void salvarTeste() {
 
         Autor autor = new Autor();
-        autor.setNome("Sérgio");
+        autor.setNome("Julia");
         autor.setNacionalidade("BR");
-        autor.setDataNascimento(LocalDate.of(2000, 8, 15));
+        autor.setDataNascimento(LocalDate.of(1995, 8, 15));
 
         var autorSalvo = repository.save(autor);
 
@@ -121,6 +121,13 @@ public class AutorRepositoryTest {
 
         //livrorepository.saveAll(autor.getLivros());
 
+    }
+    
+    void listarLivrosAutor(){
+        var id = UUID.fromString("");
+        var autor = repository.findById(id).get();
+        
+        autor.getLivros().forEach(System.out::println);
     }
 
 }
