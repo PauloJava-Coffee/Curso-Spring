@@ -45,25 +45,24 @@ public class AutorController {
 
     @PostMapping
     public ResponseEntity<Object> salvar(@RequestBody AutorDTO autor) {
-        try{
-        var autorEntidade = autor.mapearParaAutor();
-        service.salvar(autorEntidade);
+        try {
+            var autorEntidade = autor.mapearParaAutor();
+            service.salvar(autorEntidade);
 
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentRequest()
-                .path("/{id}")
-                .buildAndExpand(autorEntidade.getId())
-                .toUri();
-        
-        return ResponseEntity.created(location).build();
-        
-        }catch(RegistroDuplicadoException erro){
+            URI location = ServletUriComponentsBuilder
+                    .fromCurrentRequest()
+                    .path("/{id}")
+                    .buildAndExpand(autorEntidade.getId())
+                    .toUri();
+
+            return ResponseEntity.created(location).build();
+
+        } catch (RegistroDuplicadoException erro) {
             var erroDTO = ErroResposta.conflito(erro.getMessage());
             return ResponseEntity.status(erroDTO.status()).body(erroDTO);
         }
     }
 
-    
     @GetMapping("{id}")
     public ResponseEntity<AutorDTO> obterDetalhes(@PathVariable("id") String id) {
 
@@ -83,36 +82,40 @@ public class AutorController {
 
     @DeleteMapping("{id}")
     public ResponseEntity<Void> deletarAutor(@PathVariable String id) {
-        return service.deletarAutor(id);
+        var optionalAutor = service.findById(UUID.fromString(id));
+        if(optionalAutor.isPresent()){
+        service.deletarAutor(optionalAutor.get());
+        }
+
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping
-    public ResponseEntity<List<AutorDTO>> pesquisar(@RequestParam(value = "nome" , required = false)
-            String nome, @RequestParam(value = "nacionalidade", required = false) String nacinalidade ) {
+    public ResponseEntity<List<AutorDTO>> pesquisar(@RequestParam(value = "nome", required = false) String nome, @RequestParam(value = "nacionalidade", required = false) String nacinalidade) {
 
         return ResponseEntity.ok(service.findByExemplo(nome, nacinalidade));
     }
-    
+
     @PutMapping("{id}")
-    public ResponseEntity<Object>atualizar(@PathVariable("id") String id , @RequestBody AutorDTO dto){
-        try{
-        var idAutor = UUID.fromString(id);
-        
-        Optional<Autor> result = service.findById(idAutor);
-        if(result.isEmpty()){
-            return ResponseEntity.notFound().build();
-        }
-        var autor = result.get();
-        autor.setNome(dto.nome());
-        autor.setNacionalidade(dto.nacionalidade());
-        autor.setDataNascimento(dto.dataNascimento());
-        
-        service.atualizar(autor);
-        return ResponseEntity.noContent().build();
-        
-        }catch(RegistroDuplicadoException erro){
+    public ResponseEntity<Object> atualizar(@PathVariable("id") String id, @RequestBody AutorDTO dto) {
+        try {
+            var idAutor = UUID.fromString(id);
+
+            Optional<Autor> result = service.findById(idAutor);
+            if (result.isEmpty()) {
+                return ResponseEntity.notFound().build();
+            }
+            var autor = result.get();
+            autor.setNome(dto.nome());
+            autor.setNacionalidade(dto.nacionalidade());
+            autor.setDataNascimento(dto.dataNascimento());
+
+            service.atualizar(autor);
+            return ResponseEntity.noContent().build();
+
+        } catch (RegistroDuplicadoException erro) {
             var erroDTO = ErroResposta.conflito(erro.getMessage());
-            
+
             return ResponseEntity.status(erroDTO.status()).body(erroDTO);
         }
     }

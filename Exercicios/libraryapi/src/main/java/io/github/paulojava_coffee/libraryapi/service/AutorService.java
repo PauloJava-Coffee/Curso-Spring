@@ -5,6 +5,7 @@
 package io.github.paulojava_coffee.libraryapi.service;
 
 import io.github.paulojava_coffee.libraryapi.dto.AutorDTO;
+import io.github.paulojava_coffee.libraryapi.exceptios.OperacaoNaoPermitidaException;
 import io.github.paulojava_coffee.libraryapi.model.Autor;
 import io.github.paulojava_coffee.libraryapi.repository.AutorRepository;
 import io.github.paulojava_coffee.libraryapi.validator.AutorValidador;
@@ -43,7 +44,7 @@ public class AutorService {
         if (autor.getId() == null) {
             throw new IllegalArgumentException("Erro");
         }
-        
+
         validador.validar(autor);
         repository.save(autor);
     }
@@ -56,16 +57,15 @@ public class AutorService {
     /*
      Método deletar Autor
      */
-    public ResponseEntity<Void> deletarAutor(String id) {
-        Optional<Autor> optionalAutor = repository.findById(UUID.fromString(id));
-        if (optionalAutor.isPresent()) {
-            Autor autor = optionalAutor.get();
-            repository.delete(autor);
-
-            return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.badRequest().build();
+    public Void deletarAutor(Autor autor) {
+        if(possuiLivro(autor)){
+           throw new OperacaoNaoPermitidaException("Não é possível deletar um autor que "
+                   + "possui livros");
         }
+        repository.delete(autor);
+
+        return null;
+
     }
 
     //MÉTODO NÃO PERSONALIZADO PARA BUSCAR  AUTORES
@@ -103,5 +103,10 @@ public class AutorService {
         return repository.findAll(autorExemplo).stream().map(x
                 -> new AutorDTO(x.getId(), x.getNome(), x.getDataNascimento(),
                         x.getNacionalidade())).collect(Collectors.toList());
+    }
+
+    public boolean possuiLivro(Autor autor) {
+
+        return true;
     }
 }
