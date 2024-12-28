@@ -5,12 +5,15 @@
 package io.github.paulojava_coffee.libraryapi.controller;
 
 import io.github.paulojava_coffee.libraryapi.dto.AutorDTO;
+import io.github.paulojava_coffee.libraryapi.exceptios.RegistroDuplicadoException;
 import io.github.paulojava_coffee.libraryapi.model.Autor;
+import io.github.paulojava_coffee.libraryapi.model.ErroResposta;
 import io.github.paulojava_coffee.libraryapi.service.AutorService;
 import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import static org.springframework.data.projection.EntityProjection.ProjectionType.DTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
@@ -41,7 +44,8 @@ public class AutorController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> salvar(@RequestBody AutorDTO autor) {
+    public ResponseEntity<Object> salvar(@RequestBody AutorDTO autor) {
+        try{
         var autorEntidade = autor.mapearParaAutor();
         service.salvar(autorEntidade);
 
@@ -50,10 +54,16 @@ public class AutorController {
                 .path("/{id}")
                 .buildAndExpand(autorEntidade.getId())
                 .toUri();
-
+        
         return ResponseEntity.created(location).build();
+        
+        }catch(RegistroDuplicadoException erro){
+            var erroDTO = ErroResposta.conflito(erro.getMessage());
+            return ResponseEntity.status(erroDTO.status()).body(erroDTO);
+        }
     }
 
+    
     @GetMapping("{id}")
     public ResponseEntity<AutorDTO> obterDetalhes(@PathVariable("id") String id) {
 
@@ -84,7 +94,8 @@ public class AutorController {
     }
     
     @PutMapping("{id}")
-    public ResponseEntity<Void> atualizar(@PathVariable("id") String id , @RequestBody AutorDTO dto){
+    public ResponseEntity<Object>atualizar(@PathVariable("id") String id , @RequestBody AutorDTO dto){
+        try{
         var idAutor = UUID.fromString(id);
         
         Optional<Autor> result = service.findById(idAutor);
@@ -98,6 +109,12 @@ public class AutorController {
         
         service.atualizar(autor);
         return ResponseEntity.noContent().build();
+        
+        }catch(RegistroDuplicadoException erro){
+            var erroDTO = ErroResposta.conflito(erro.getMessage());
+            
+            return ResponseEntity.status(erroDTO.status()).body(erroDTO);
+        }
     }
 
     /* @GetMapping("{id}")

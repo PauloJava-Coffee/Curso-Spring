@@ -7,6 +7,7 @@ package io.github.paulojava_coffee.libraryapi.service;
 import io.github.paulojava_coffee.libraryapi.dto.AutorDTO;
 import io.github.paulojava_coffee.libraryapi.model.Autor;
 import io.github.paulojava_coffee.libraryapi.repository.AutorRepository;
+import io.github.paulojava_coffee.libraryapi.validator.AutorValidador;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -25,26 +26,30 @@ import org.springframework.stereotype.Service;
 public class AutorService {
 
     private AutorRepository repository;
+    private final AutorValidador validador;
 
-    public AutorService(AutorRepository repository) {
+    public AutorService(AutorRepository repository, AutorValidador validador) {
         this.repository = repository;
+        this.validador = validador;
     }
 
     public Autor salvar(Autor autor) {
+        validador.validar(autor);
         return repository.save(autor);
     }
-    
-     public void atualizar(Autor autor) {
-         
-         if(autor.getId() == null){
-             throw new IllegalArgumentException("Erro");
-         }
-         
+
+    public void atualizar(Autor autor) {
+
+        if (autor.getId() == null) {
+            throw new IllegalArgumentException("Erro");
+        }
+        
+        validador.validar(autor);
         repository.save(autor);
     }
 
     public Optional<Autor> findById(UUID id) {
-        
+
         return repository.findById(id);
     }
 
@@ -61,42 +66,42 @@ public class AutorService {
         } else {
             return ResponseEntity.badRequest().build();
         }
-    } 
-    
+    }
+
     //MÉTODO NÃO PERSONALIZADO PARA BUSCAR  AUTORES
     public ResponseEntity<List<AutorDTO>> buscarAutores(String nome, String nacionalidade) {
-        
+
         if (nome != null ^ nacionalidade != null) {
             List<AutorDTO> lista = repository.findByNomeOrNacionalidade(nome, nacionalidade);
             return ResponseEntity.ok(lista);
         }
-        if(nome != null && nacionalidade != null){
-             List<AutorDTO> lista = repository.findByNomeAndNacionalidade(nome, nacionalidade);
+        if (nome != null && nacionalidade != null) {
+            List<AutorDTO> lista = repository.findByNomeAndNacionalidade(nome, nacionalidade);
             return ResponseEntity.ok(lista);
-      
+
+        }
+
         return ResponseEntity.ok(repository.findAll().stream()
                 .map(x -> new AutorDTO(x.getId(), x.getNome(), x.getDataNascimento(),
                 x.getNacionalidade())).collect(Collectors.toList()));
-
     }
-    
-    
-    public List<AutorDTO> findByExemplo(String nome, String nacionalidade){
+
+    public List<AutorDTO> findByExemplo(String nome, String nacionalidade) {
         var autor = new Autor();
-        
+
         autor.setNome(nome);
         autor.setNacionalidade(nacionalidade);
-        
+
         ExampleMatcher matcher = ExampleMatcher.
                 matching()
                 .withIgnoreNullValues()
                 .withIgnoreCase()
                 .withStringMatcher(StringMatcher.CONTAINING);
-        
-        Example<Autor> autorExemplo = Example.of(autor,matcher );
-        
-        return repository.findAll(autorExemplo).stream().map(x -> 
-                new AutorDTO(x.getId(),x.getNome(), x.getDataNascimento()
-                        ,x.getNacionalidade())).collect(Collectors.toList());
+
+        Example<Autor> autorExemplo = Example.of(autor, matcher);
+
+        return repository.findAll(autorExemplo).stream().map(x
+                -> new AutorDTO(x.getId(), x.getNome(), x.getDataNascimento(),
+                        x.getNacionalidade())).collect(Collectors.toList());
     }
 }

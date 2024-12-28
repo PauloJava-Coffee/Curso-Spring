@@ -6,7 +6,9 @@ package io.github.paulojava_coffee.libraryapi.repository;
 
 import io.github.paulojava_coffee.libraryapi.dto.AutorDTO;
 import io.github.paulojava_coffee.libraryapi.model.Autor;
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -24,4 +26,8 @@ public interface AutorRepository extends JpaRepository<Autor, UUID> {
 
     //Select * from autores where nome = ? or nacionalidade = ?
     List<AutorDTO> findByNomeOrNacionalidade(String nome, String nacionalidade);
+    
+    Optional<Autor> findByNomeAndDataNascimentoAndNacionalidade(
+     String nome, LocalDate dataNascimento, String nacionalidade
+    );
 }
