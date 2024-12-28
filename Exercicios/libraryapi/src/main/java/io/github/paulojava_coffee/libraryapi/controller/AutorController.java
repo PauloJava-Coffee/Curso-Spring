@@ -14,11 +14,14 @@ import java.util.UUID;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -56,19 +59,48 @@ public class AutorController {
 
         var idAutor = UUID.fromString(id);
         Optional<Autor> autorOptional = service.findById(idAutor);
-        
-        if(autorOptional.isPresent()){
+
+        if (autorOptional.isPresent()) {
             Autor autor = autorOptional.get();
-            AutorDTO dto = new AutorDTO(autor.getId(), autor.getNome(),autor.getDataNascimento(), autor.getNacionalidade());
-            
+            AutorDTO dto = new AutorDTO(autor.getId(), autor.getNome(), autor.getDataNascimento(), autor.getNacionalidade());
+
             return ResponseEntity.ok(dto);
-        }else{
+        } else {
             return ResponseEntity.notFound().build();
         }
 
     }
 
-   /* @GetMapping("{id}")
+    @DeleteMapping("{id}")
+    public ResponseEntity<Void> deletarAutor(@PathVariable String id) {
+        return service.deletarAutor(id);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<AutorDTO>> pesquisar(@RequestParam(value = "nome" , required = false)
+            String nome, @RequestParam(value = "nacionalidade", required = false) String nacinalidade ) {
+
+        return ResponseEntity.ok(service.findByExemplo(nome, nacinalidade));
+    }
+    
+    @PutMapping("{id}")
+    public ResponseEntity<Void> atualizar(@PathVariable("id") String id , @RequestBody AutorDTO dto){
+        var idAutor = UUID.fromString(id);
+        
+        Optional<Autor> result = service.findById(idAutor);
+        if(result.isEmpty()){
+            return ResponseEntity.notFound().build();
+        }
+        var autor = result.get();
+        autor.setNome(dto.nome());
+        autor.setNacionalidade(dto.nacionalidade());
+        autor.setDataNascimento(dto.dataNascimento());
+        
+        service.atualizar(autor);
+        return ResponseEntity.noContent().build();
+    }
+
+    /* @GetMapping("{id}")
     public Autor buscarAutor(@PathVariable("id") String id) {
        return null;
     }*/

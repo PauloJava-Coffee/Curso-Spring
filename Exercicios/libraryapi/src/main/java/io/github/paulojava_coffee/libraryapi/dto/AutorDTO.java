@@ -7,6 +7,7 @@ package io.github.paulojava_coffee.libraryapi.dto;
 import io.github.paulojava_coffee.libraryapi.model.Autor;
 import java.time.LocalDate;
 import java.util.UUID;
+import org.springframework.beans.BeanUtils;
 
 /**
  *
@@ -19,6 +20,11 @@ public record AutorDTO(
         String nome,
         LocalDate dataNascimento, 
         String nacionalidade) {
+  
+    public  void copiarPropriedade(Autor entity){
+        BeanUtils.copyProperties(entity, this);
+    }
+    
 
     public Autor mapearParaAutor(){
         Autor autor = new Autor();

@@ -7,6 +7,7 @@ package io.github.paulojava_coffee.libraryapi.model;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -15,12 +16,16 @@ import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
 //import jakarta.persistence.Transient;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 /**
  *
@@ -32,6 +37,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @Entity
 @Table(name = "autor", schema = "public")
+@EntityListeners(AuditingEntityListener.class)
 public class Autor {
 
     @Id
@@ -47,6 +53,17 @@ public class Autor {
 
     @Column(name = "nacionalidade", length = 50, nullable = false)
     private String nacionalidade;
+    
+    @CreatedDate
+    @Column(columnDefinition = "timestamp")
+    private LocalDateTime dataCadastro;
+    
+    @LastModifiedDate
+    @Column(columnDefinition = "timestamp")
+    private LocalDateTime dataAtualizacao;
+    
+    private  Integer  idusuario;
+    
 
     @OneToMany(mappedBy = "autor", cascade = CascadeType.ALL)
     //@Transient
