@@ -23,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
  */
 public interface LivroRepository extends JpaRepository<Livro, UUID> {
 
+   
     //Query method
     List<Livro> findByAutor(Autor autor);
 
@@ -73,6 +74,7 @@ public interface LivroRepository extends JpaRepository<Livro, UUID> {
 
     @Modifying
     @Transactional
+    
     @Query("delete from Livro l where l.genero = ?1")
     void deleteByGenero(GeneroLivro genero);
 
@@ -80,4 +82,6 @@ public interface LivroRepository extends JpaRepository<Livro, UUID> {
     @Transactional
     @Query("Update Livro set dataPublicacao = ?1")
     void updadeDataPublicacao(LocalDate novaData);
+    
+     boolean existsByAutor(Autor autor);
 }

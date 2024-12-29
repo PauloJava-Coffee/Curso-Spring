@@ -13,6 +13,7 @@ import jakarta.transaction.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.Month;
+import java.util.Optional;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,9 +43,11 @@ public class LivroRepositoryTest {
        livro.setGenero(GeneroLivro.FICCAO);
        livro.setPreco(BigDecimal.valueOf(200));
        
-       
-       Autor autor = autorRepository.findById(UUID.fromString("2d1266d8-d278-4dc6-adac-b6e095016cb9")).orElse(null);
-       livro.setAutor(autor);
+       Optional<Autor> optionalAutor = autorRepository.findById(UUID.fromString("27488dd9-0420-40bf-a81e-c466a9977ec5"));
+       if(optionalAutor.isPresent()){      
+         livro.setAutor(optionalAutor.get());  
+       }  
+             
        
        repository.save(livro);
     }
@@ -63,7 +66,7 @@ public class LivroRepositoryTest {
         Autor autor = new Autor();
         autor.setNome("João");
         autor.setNacionalidade("Uru");
-        autor.setDataNascimento(LocalDate.of(2000, 8, 15));
+        autor.setDataNascimento(LocalDate.of(2007, 8, 15));
 
         autorRepository.save(autor);
 

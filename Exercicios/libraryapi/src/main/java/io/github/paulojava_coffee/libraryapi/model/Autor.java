@@ -8,6 +8,7 @@ import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -31,7 +32,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
  *
  * @author barbo
  */
-@ToString
+@ToString(exclude = "livros")
 @Getter
 @Setter
 @AllArgsConstructor
@@ -65,7 +66,9 @@ public class Autor {
     private  Integer  idusuario;
     
 
-    @OneToMany(mappedBy = "autor", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "autor", fetch = FetchType.LAZY
+     //       cascade = CascadeType.ALL
+    )
     //@Transient
     private List<Livro> livros;
 

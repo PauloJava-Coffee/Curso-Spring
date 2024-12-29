@@ -8,6 +8,7 @@ import io.github.paulojava_coffee.libraryapi.dto.AutorDTO;
 import io.github.paulojava_coffee.libraryapi.exceptios.OperacaoNaoPermitidaException;
 import io.github.paulojava_coffee.libraryapi.model.Autor;
 import io.github.paulojava_coffee.libraryapi.repository.AutorRepository;
+import io.github.paulojava_coffee.libraryapi.repository.LivroRepository;
 import io.github.paulojava_coffee.libraryapi.validator.AutorValidador;
 import java.util.List;
 import java.util.Optional;
@@ -26,12 +27,15 @@ import org.springframework.stereotype.Service;
 @Service
 public class AutorService {
 
-    private AutorRepository repository;
+    private final AutorRepository repository;
+    private final LivroRepository livroRepository;
     private final AutorValidador validador;
 
-    public AutorService(AutorRepository repository, AutorValidador validador) {
+    public AutorService(AutorRepository repository, AutorValidador validador, LivroRepository livroRepository) {
         this.repository = repository;
+        this.livroRepository = livroRepository;
         this.validador = validador;
+        
     }
 
     public Autor salvar(Autor autor) {
@@ -106,7 +110,6 @@ public class AutorService {
     }
 
     public boolean possuiLivro(Autor autor) {
-
-        return true;
+        return livroRepository.existsByAutor(autor);
     }
 }

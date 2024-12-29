@@ -5,6 +5,7 @@
 package io.github.paulojava_coffee.libraryapi.controller;
 
 import io.github.paulojava_coffee.libraryapi.dto.AutorDTO;
+import io.github.paulojava_coffee.libraryapi.exceptios.OperacaoNaoPermitidaException;
 import io.github.paulojava_coffee.libraryapi.exceptios.RegistroDuplicadoException;
 import io.github.paulojava_coffee.libraryapi.model.Autor;
 import io.github.paulojava_coffee.libraryapi.model.ErroResposta;
@@ -81,13 +82,18 @@ public class AutorController {
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<Void> deletarAutor(@PathVariable String id) {
-        var optionalAutor = service.findById(UUID.fromString(id));
-        if(optionalAutor.isPresent()){
-        service.deletarAutor(optionalAutor.get());
-        }
+    public ResponseEntity<Object> deletarAutor(@PathVariable String id) {
+        try {
+            var optionalAutor = service.findById(UUID.fromString(id));
+            if (optionalAutor.isPresent()) {
+                service.deletarAutor(optionalAutor.get());
+            }
 
-        return ResponseEntity.noContent().build();
+            return ResponseEntity.noContent().build();
+        } catch (OperacaoNaoPermitidaException erro) {
+            var erroDTO = ErroResposta.conflito(erro.getMessage());
+            return ResponseEntity.status(erroDTO.status()).body(erroDTO);
+        }
     }
 
     @GetMapping
@@ -120,8 +126,4 @@ public class AutorController {
         }
     }
 
-    /* @GetMapping("{id}")
-    public Autor buscarAutor(@PathVariable("id") String id) {
-       return null;
-    }*/
 }
