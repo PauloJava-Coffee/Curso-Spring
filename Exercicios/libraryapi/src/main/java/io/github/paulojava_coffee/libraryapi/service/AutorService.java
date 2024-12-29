@@ -10,10 +10,12 @@ import io.github.paulojava_coffee.libraryapi.model.Autor;
 import io.github.paulojava_coffee.libraryapi.repository.AutorRepository;
 import io.github.paulojava_coffee.libraryapi.repository.LivroRepository;
 import io.github.paulojava_coffee.libraryapi.validator.AutorValidador;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.ExampleMatcher.StringMatcher;
@@ -24,6 +26,7 @@ import org.springframework.stereotype.Service;
  *
  * @author santa
  */
+@RequiredArgsConstructor
 @Service
 public class AutorService {
 
@@ -31,12 +34,7 @@ public class AutorService {
     private final LivroRepository livroRepository;
     private final AutorValidador validador;
 
-    public AutorService(AutorRepository repository, AutorValidador validador, LivroRepository livroRepository) {
-        this.repository = repository;
-        this.livroRepository = livroRepository;
-        this.validador = validador;
-        
-    }
+    
 
     public Autor salvar(Autor autor) {
         validador.validar(autor);
@@ -112,4 +110,6 @@ public class AutorService {
     public boolean possuiLivro(Autor autor) {
         return livroRepository.existsByAutor(autor);
     }
+    
+   
 }

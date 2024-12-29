@@ -32,6 +32,7 @@ public class LivroRepositoryTest {
     @Autowired
     AutorRepository autorRepository;
 
+    @Transactional
     @Test
     void salvarTest() {
  
@@ -43,13 +44,15 @@ public class LivroRepositoryTest {
        livro.setGenero(GeneroLivro.FICCAO);
        livro.setPreco(BigDecimal.valueOf(200));
        
-       Optional<Autor> optionalAutor = autorRepository.findById(UUID.fromString("27488dd9-0420-40bf-a81e-c466a9977ec5"));
+       Optional<Autor> optionalAutor = autorRepository.findById(UUID.fromString("0e71c6e7-252e-487a-abcc-ba40e6c8fa89"));
        if(optionalAutor.isPresent()){      
          livro.setAutor(optionalAutor.get());  
        }  
              
        
        repository.save(livro);
+       
+       
     }
 
     @Test

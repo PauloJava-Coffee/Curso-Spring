@@ -9,37 +9,42 @@ import io.github.paulojava_coffee.libraryapi.model.Autor;
 import io.github.paulojava_coffee.libraryapi.repository.AutorRepository;
 import java.time.LocalDate;
 import java.util.Optional;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.stereotype.Component;
 
 /**
  *
  * @author santa
  */
+@RequiredArgsConstructor
 @Component
 public class AutorValidador {
 
     private final AutorRepository repository;
 
-    public AutorValidador(AutorRepository repository) {
-        this.repository = repository;
+    public void validar(Autor autor) {
+        if (autorExiste(autor)) {
+            throw new RegistroDuplicadoException("Autor já cadastrado");
+        }
     }
 
-    public void validar(Autor autor) {
-     if(autorExiste(autor)){
-         throw new RegistroDuplicadoException("Autor já cadastrado");
-     }
-    }
-    
-    private boolean autorExiste(Autor autor){
-        Optional<Autor> optionalAutor = repository.findByNomeAndDataNascimentoAndNacionalidade(
+    private boolean autorExiste(Autor autor) {
+
+        ExampleMatcher matcher = ExampleMatcher.matching().withIgnoreCase();
+        Example<Autor> autorexemplo = Example.of(autor, matcher);
+
+        Optional<Autor> optionalAutor = repository.findOne(autorexemplo);
+
+        /*= repository.findByNomeAndDataNascimentoAndNacionalidade(
                 autor.getNome(), autor.getDataNascimento(), autor.getNacionalidade()
-                );
-        
-        if(autor.getId() == null){
+                );*/
+        if (autor.getId() == null) {
             return optionalAutor.isPresent();
         }
-        
-        return ! autor.getId().equals(optionalAutor.get().getId()) && optionalAutor.isPresent();
+
+        return !autor.getId().equals(optionalAutor.get().getId()) && optionalAutor.isPresent();
     }
 
 }

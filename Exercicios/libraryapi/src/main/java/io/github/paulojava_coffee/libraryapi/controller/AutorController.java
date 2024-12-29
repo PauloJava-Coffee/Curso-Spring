@@ -14,6 +14,7 @@ import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import lombok.RequiredArgsConstructor;
 import static org.springframework.data.projection.EntityProjection.ProjectionType.DTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -33,16 +34,13 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
  *
  * @author santa
  */
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("autores")
 public class AutorController {
 
     private final AutorService service;
 
-    public AutorController(AutorService service) {
-        this.service = service;
-
-    }
 
     @PostMapping
     public ResponseEntity<Object> salvar(@RequestBody AutorDTO autor) {
