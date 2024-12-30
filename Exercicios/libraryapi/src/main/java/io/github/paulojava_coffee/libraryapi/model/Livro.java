@@ -7,6 +7,7 @@ package io.github.paulojava_coffee.libraryapi.model;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
@@ -17,9 +18,13 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.UUID;
 import lombok.Data;
 import lombok.ToString;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 
 /**
@@ -29,6 +34,7 @@ import lombok.ToString;
 @ToString(exclude = "autor")
 @Data
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 public class Livro {
 
     @Id
@@ -36,7 +42,7 @@ public class Livro {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(name = "isbn", length = 20, nullable = false)
+    @Column(name = "isbn", length = 20, nullable = false, unique = true)
     private String isbn;
 
     @Column(name = "titulo", length = 60, nullable = false)
@@ -58,5 +64,15 @@ public class Livro {
     ) // Cascade PERSIST usando para salvar um novo autor ao salvar um novo livro
     @JoinColumn
     private Autor autor;
+    
+    @CreatedDate
+    @Column(columnDefinition = "timestamp")
+    private LocalDateTime dataCadastro;
+    
+    @LastModifiedDate
+    @Column(columnDefinition = "timestamp")
+    private LocalDateTime dataAtualizacao;
+    
+    private  Integer  idusuario;
 
 }

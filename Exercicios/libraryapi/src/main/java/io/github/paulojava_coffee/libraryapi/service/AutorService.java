@@ -6,6 +6,7 @@ package io.github.paulojava_coffee.libraryapi.service;
 
 import io.github.paulojava_coffee.libraryapi.dto.AutorDTO;
 import io.github.paulojava_coffee.libraryapi.exceptios.OperacaoNaoPermitidaException;
+import io.github.paulojava_coffee.libraryapi.mappers.AutorMapper;
 import io.github.paulojava_coffee.libraryapi.model.Autor;
 import io.github.paulojava_coffee.libraryapi.repository.AutorRepository;
 import io.github.paulojava_coffee.libraryapi.repository.LivroRepository;
@@ -33,6 +34,7 @@ public class AutorService {
     private final AutorRepository repository;
     private final LivroRepository livroRepository;
     private final AutorValidador validador;
+    private final AutorMapper mapper;
 
     public Autor salvar(Autor autor) {
         validador.validar(autor);
@@ -84,10 +86,8 @@ public class AutorService {
     //MÉTODO PERSONALIZADO PARA BUSCA DE AUTORES
     public List<AutorDTO> findByExemplo(String nome, String nacionalidade) {
         var autor = new Autor();
-
         autor.setNome(nome);
         autor.setNacionalidade(nacionalidade);
-
         ExampleMatcher matcher = ExampleMatcher.
                 matching()
                 .withIgnoreNullValues()
@@ -96,9 +96,7 @@ public class AutorService {
 
         Example<Autor> autorExemplo = Example.of(autor, matcher);
 
-        return repository.findAll(autorExemplo).stream().map(x
-                -> new AutorDTO(x.getId(), x.getNome(), x.getDataNascimento(),
-                        x.getNacionalidade())).collect(Collectors.toList());
+        return repository.findAll(autorExemplo).stream().map(mapper::toDTO).toList();
     }
 
     public boolean possuiLivro(Autor autor) {

@@ -7,6 +7,7 @@ package io.github.paulojava_coffee.libraryapi.controller;
 import io.github.paulojava_coffee.libraryapi.dto.AutorDTO;
 import io.github.paulojava_coffee.libraryapi.exceptios.OperacaoNaoPermitidaException;
 import io.github.paulojava_coffee.libraryapi.exceptios.RegistroDuplicadoException;
+import io.github.paulojava_coffee.libraryapi.mappers.AutorMapper;
 import io.github.paulojava_coffee.libraryapi.model.Autor;
 import io.github.paulojava_coffee.libraryapi.model.ErroResposta;
 import io.github.paulojava_coffee.libraryapi.service.AutorService;
@@ -41,16 +42,17 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 public class AutorController {
 
     private final AutorService service;
+    private final AutorMapper mapper;
 
     @PostMapping
-    public ResponseEntity<Object> salvar(@RequestBody @Valid AutorDTO autor) {
+    public ResponseEntity<Object> salvar(@RequestBody @Valid AutorDTO dto) {
         try {
-            var autorEntidade = autor.mapearParaAutor();
-            service.salvar(autorEntidade);
+            var autor = mapper.toEntity(dto);
+            service.salvar(autor);
             URI location = ServletUriComponentsBuilder
                     .fromCurrentRequest()
                     .path("/{id}")
-                    .buildAndExpand(autorEntidade.getId())
+                    .buildAndExpand(autor.getId())
                     .toUri();
 
             return ResponseEntity.created(location).build();
@@ -66,14 +68,18 @@ public class AutorController {
         var idAutor = UUID.fromString(id);
         Optional<Autor> autorOptional = service.findById(idAutor);
 
+        return service.findById(idAutor).map(x -> {
+          return ResponseEntity.ok(mapper.toDTO(x));
+        }).orElseGet( () -> ResponseEntity.notFound().build());
+        
+        /*
         if (autorOptional.isPresent()) {
             Autor autor = autorOptional.get();
-            AutorDTO dto = new AutorDTO(autor.getId(), autor.getNome(), autor.getDataNascimento(), autor.getNacionalidade());
+            AutorDTO dto = mapper.toDTO(autorOptional.get());
             return ResponseEntity.ok(dto);
         } else {
             return ResponseEntity.notFound().build();
-        }
-
+        }*/
     }
 
     @DeleteMapping("{id}")
