@@ -4,10 +4,22 @@
  */
 package io.github.paulojava_coffee.libraryapi.dto;
 
+import io.github.paulojava_coffee.libraryapi.model.GeneroLivro;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.UUID;
+
 /**
  *
  * @author santa
  */
-public record ResultadoPesquisaLivroDTO() {
+public record ResultadoPesquisaLivroDTO(
+        UUID id,
+        String isbn,
+        String titulo,
+        LocalDate dataPublicacao,
+        GeneroLivro genero,
+        BigDecimal preco,
+        AutorDTO autor) {
 
 }
