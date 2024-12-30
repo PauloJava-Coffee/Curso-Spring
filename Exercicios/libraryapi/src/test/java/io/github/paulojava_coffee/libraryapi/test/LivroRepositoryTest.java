@@ -35,53 +35,39 @@ public class LivroRepositoryTest {
     @Transactional
     @Test
     void salvarTest() {
- 
        Livro livro = new Livro();
-       
        livro.setTitulo("Jardin");
        livro.setDataPublicacao(LocalDate.of(1995, 7, 16));
        livro.setIsbn("7789-0987");
        livro.setGenero(GeneroLivro.FICCAO);
-       livro.setPreco(BigDecimal.valueOf(200));
-       
+       livro.setPreco(BigDecimal.valueOf(200));  
        Optional<Autor> optionalAutor = autorRepository.findById(UUID.fromString("0e71c6e7-252e-487a-abcc-ba40e6c8fa89"));
        if(optionalAutor.isPresent()){      
          livro.setAutor(optionalAutor.get());  
        }  
-             
-       
-       repository.save(livro);
-       
-       
-    }
-
-    @Test
-    void salvarCascadeTest() {
-        Livro livro = new Livro();
-
-        livro.setIsbn("6668-9090");
-        livro.setPreco(BigDecimal.valueOf(100));
-        livro.setDataPublicacao(LocalDate.of(1999, 8, 14));
-        livro.setGenero(GeneroLivro.ROMANCE);
-        livro.setTitulo("Jardin vermelho");
-
-        //Criando um autor  que irá ser " salvo em cascata"
-        Autor autor = new Autor();
-        autor.setNome("João");
-        autor.setNacionalidade("Uru");
-        autor.setDataNascimento(LocalDate.of(2007, 8, 15));
-
-        autorRepository.save(autor);
-
-        livro.setAutor(autor);
-
-        repository.save(livro);
+       repository.save(livro);    
     }
 
     @Test
     void salvarAutorELivroTest() {
         Livro livro = new Livro();
+        livro.setIsbn("6668-9090");
+        livro.setPreco(BigDecimal.valueOf(100));
+        livro.setDataPublicacao(LocalDate.of(1999, 8, 14));
+        livro.setGenero(GeneroLivro.ROMANCE);
+        livro.setTitulo("Jardin vermelho");
+        Autor autor = new Autor();
+        autor.setNome("João");
+        autor.setNacionalidade("Uru");
+        autor.setDataNascimento(LocalDate.of(2007, 8, 15));
+        autorRepository.save(autor);
+        livro.setAutor(autor);
+        repository.save(livro);
+    }
 
+    @Test
+    void salvarCascadeTest() {
+        Livro livro = new Livro();
         livro.setIsbn("6668-9090");
         livro.setPreco(BigDecimal.valueOf(100));
         livro.setDataPublicacao(LocalDate.of(1999, 8, 14));
@@ -93,9 +79,7 @@ public class LivroRepositoryTest {
         autor.setNome("Bernabei");
         autor.setNacionalidade("Uru");
         autor.setDataNascimento(LocalDate.of(2000, 8, 15));
-
         livro.setAutor(autor);
-
         repository.save(livro);
     }
 
@@ -107,27 +91,21 @@ public class LivroRepositoryTest {
     @Test
     void alterAltorDoLivro() {
         var livroparaAtualizar = repository.findById(UUID.fromString("aad99e93-94a1-4bc1-9b17-8f17dddcd3ae")).orElse(null);
-
         UUID idAutor = UUID.fromString("bed2e4bf-47c3-4860-ab94-b7f4423c9ce9");
         Autor autor = autorRepository.findById(idAutor).orElse(null);
-
         livroparaAtualizar.setAutor(autor);
-
         repository.save(livroparaAtualizar);
-
     }
 
     @Test
     void DeleteTest() {
         Livro livro = repository.findById(UUID.fromString("aad99e93-94a1-4bc1-9b17-8f17dddcd3ae")).orElse(null);
-
         repository.deleteById(livro.getId());
     }
 
     @Test
     void DeleteCascade() {
         Livro livro = repository.findById(UUID.fromString("aad99e93-94a1-4bc1-9b17-8f17dddcd3ae")).orElse(null);
-
         repository.deleteById(livro.getId());
     }
 
@@ -136,7 +114,6 @@ public class LivroRepositoryTest {
     void buscarLivroTest() {
         UUID id = UUID.fromString("6d056888-f7de-4da0-be0a-35c6e05b9c61");
         Livro livro = repository.findById(id).orElse(null);
-
         System.out.println("Livro: ");
         System.out.println(livro.getTitulo());
         System.out.println("Autor: ");

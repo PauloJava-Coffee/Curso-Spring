@@ -10,6 +10,7 @@ import io.github.paulojava_coffee.libraryapi.exceptios.RegistroDuplicadoExceptio
 import io.github.paulojava_coffee.libraryapi.model.Autor;
 import io.github.paulojava_coffee.libraryapi.model.ErroResposta;
 import io.github.paulojava_coffee.libraryapi.service.AutorService;
+import jakarta.validation.Valid;
 import java.net.URI;
 import java.util.List;
 import java.util.Optional;
@@ -41,13 +42,11 @@ public class AutorController {
 
     private final AutorService service;
 
-
     @PostMapping
-    public ResponseEntity<Object> salvar(@RequestBody AutorDTO autor) {
+    public ResponseEntity<Object> salvar(@RequestBody @Valid AutorDTO autor) {
         try {
             var autorEntidade = autor.mapearParaAutor();
             service.salvar(autorEntidade);
-
             URI location = ServletUriComponentsBuilder
                     .fromCurrentRequest()
                     .path("/{id}")
@@ -64,14 +63,12 @@ public class AutorController {
 
     @GetMapping("{id}")
     public ResponseEntity<AutorDTO> obterDetalhes(@PathVariable("id") String id) {
-
         var idAutor = UUID.fromString(id);
         Optional<Autor> autorOptional = service.findById(idAutor);
 
         if (autorOptional.isPresent()) {
             Autor autor = autorOptional.get();
             AutorDTO dto = new AutorDTO(autor.getId(), autor.getNome(), autor.getDataNascimento(), autor.getNacionalidade());
-
             return ResponseEntity.ok(dto);
         } else {
             return ResponseEntity.notFound().build();
@@ -86,7 +83,6 @@ public class AutorController {
             if (optionalAutor.isPresent()) {
                 service.deletarAutor(optionalAutor.get());
             }
-
             return ResponseEntity.noContent().build();
         } catch (OperacaoNaoPermitidaException erro) {
             var erroDTO = ErroResposta.conflito(erro.getMessage());
@@ -95,16 +91,16 @@ public class AutorController {
     }
 
     @GetMapping
-    public ResponseEntity<List<AutorDTO>> pesquisar(@RequestParam(value = "nome", required = false) String nome, @RequestParam(value = "nacionalidade", required = false) String nacinalidade) {
-
+    public ResponseEntity<List<AutorDTO>> pesquisar(@RequestParam(value = "nome",
+            required = false) String nome, @RequestParam(value = "nacionalidade",
+                    required = false) String nacinalidade) {
         return ResponseEntity.ok(service.findByExemplo(nome, nacinalidade));
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<Object> atualizar(@PathVariable("id") String id, @RequestBody AutorDTO dto) {
+    public ResponseEntity<Object> atualizar(@PathVariable("id") String id, @RequestBody @Valid AutorDTO dto) {
         try {
             var idAutor = UUID.fromString(id);
-
             Optional<Autor> result = service.findById(idAutor);
             if (result.isEmpty()) {
                 return ResponseEntity.notFound().build();
@@ -113,13 +109,10 @@ public class AutorController {
             autor.setNome(dto.nome());
             autor.setNacionalidade(dto.nacionalidade());
             autor.setDataNascimento(dto.dataNascimento());
-
             service.atualizar(autor);
             return ResponseEntity.noContent().build();
-
         } catch (RegistroDuplicadoException erro) {
             var erroDTO = ErroResposta.conflito(erro.getMessage());
-
             return ResponseEntity.status(erroDTO.status()).body(erroDTO);
         }
     }

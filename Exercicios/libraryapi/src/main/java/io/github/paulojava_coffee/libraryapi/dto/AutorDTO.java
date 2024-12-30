@@ -5,6 +5,10 @@
 package io.github.paulojava_coffee.libraryapi.dto;
 
 import io.github.paulojava_coffee.libraryapi.model.Autor;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Past;
+import jakarta.validation.constraints.Size;
 import java.time.LocalDate;
 import java.util.UUID;
 import org.springframework.beans.BeanUtils;
@@ -14,24 +18,28 @@ import org.springframework.beans.BeanUtils;
  * @author santa
  */
 //DATA TRANSFER OBJECT
-
 public record AutorDTO(
         UUID id,
+        @NotBlank(message = "Campo obrigatório")
+        @Size(min = 2, max = 100, message = "Campo fora do tamanho padrão")
         String nome,
-        LocalDate dataNascimento, 
+        @NotNull(message = "Campo obrigatório")
+        @Past(message = "Data inválida")
+        LocalDate dataNascimento,
+        @NotBlank(message = "Campo obrigatório")
+        @Size(min = 2, max = 50, message = "Campo fora do tamanho padrão")
         String nacionalidade) {
-  
-    public  void copiarPropriedade(Autor entity){
+
+    public void copiarPropriedade(Autor entity) {
         BeanUtils.copyProperties(entity, this);
     }
-    
 
-    public Autor mapearParaAutor(){
+    public Autor mapearParaAutor() {
         Autor autor = new Autor();
         autor.setNome(nome);
         autor.setNacionalidade(nacionalidade);
         autor.setDataNascimento(dataNascimento);
-        
+
         return autor;
     }
 }

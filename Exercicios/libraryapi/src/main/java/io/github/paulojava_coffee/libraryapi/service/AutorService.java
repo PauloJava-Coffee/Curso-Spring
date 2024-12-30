@@ -34,25 +34,20 @@ public class AutorService {
     private final LivroRepository livroRepository;
     private final AutorValidador validador;
 
-    
-
     public Autor salvar(Autor autor) {
         validador.validar(autor);
         return repository.save(autor);
     }
 
     public void atualizar(Autor autor) {
-
         if (autor.getId() == null) {
             throw new IllegalArgumentException("Erro");
         }
-
         validador.validar(autor);
         repository.save(autor);
     }
 
     public Optional<Autor> findById(UUID id) {
-
         return repository.findById(id);
     }
 
@@ -60,19 +55,19 @@ public class AutorService {
      Método deletar Autor
      */
     public Void deletarAutor(Autor autor) {
-        if(possuiLivro(autor)){
-           throw new OperacaoNaoPermitidaException("Não é possível deletar um autor que "
-                   + "possui livros");
+        if (possuiLivro(autor)) {
+            throw new OperacaoNaoPermitidaException("Não é possível deletar um autor que "
+                    + "possui livros");
         }
         repository.delete(autor);
-
         return null;
-
     }
 
-    //MÉTODO NÃO PERSONALIZADO PARA BUSCAR  AUTORES
+    /* ILUSTRATIVO
+    *
+    * MÉTODO NÃO PERSONALIZADO PARA BUSCAR  AUTORES
+     */
     public ResponseEntity<List<AutorDTO>> buscarAutores(String nome, String nacionalidade) {
-
         if (nome != null ^ nacionalidade != null) {
             List<AutorDTO> lista = repository.findByNomeOrNacionalidade(nome, nacionalidade);
             return ResponseEntity.ok(lista);
@@ -80,14 +75,13 @@ public class AutorService {
         if (nome != null && nacionalidade != null) {
             List<AutorDTO> lista = repository.findByNomeAndNacionalidade(nome, nacionalidade);
             return ResponseEntity.ok(lista);
-
         }
-
         return ResponseEntity.ok(repository.findAll().stream()
                 .map(x -> new AutorDTO(x.getId(), x.getNome(), x.getDataNascimento(),
                 x.getNacionalidade())).collect(Collectors.toList()));
     }
 
+    //MÉTODO PERSONALIZADO PARA BUSCA DE AUTORES
     public List<AutorDTO> findByExemplo(String nome, String nacionalidade) {
         var autor = new Autor();
 
@@ -110,6 +104,5 @@ public class AutorService {
     public boolean possuiLivro(Autor autor) {
         return livroRepository.existsByAutor(autor);
     }
-    
-   
+
 }

@@ -31,10 +31,8 @@ public class AutorValidador {
     }
 
     private boolean autorExiste(Autor autor) {
-
         ExampleMatcher matcher = ExampleMatcher.matching().withIgnoreCase();
         Example<Autor> autorexemplo = Example.of(autor, matcher);
-
         Optional<Autor> optionalAutor = repository.findOne(autorexemplo);
 
         /*= repository.findByNomeAndDataNascimentoAndNacionalidade(
@@ -43,7 +41,6 @@ public class AutorValidador {
         if (autor.getId() == null) {
             return optionalAutor.isPresent();
         }
-
         return !autor.getId().equals(optionalAutor.get().getId()) && optionalAutor.isPresent();
     }
 
