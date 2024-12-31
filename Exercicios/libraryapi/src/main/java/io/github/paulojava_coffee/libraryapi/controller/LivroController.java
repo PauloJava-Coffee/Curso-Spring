@@ -14,13 +14,16 @@ import io.github.paulojava_coffee.libraryapi.repository.LivroRepository;
 import io.github.paulojava_coffee.libraryapi.service.LivroService;
 import jakarta.validation.Valid;
 import java.util.List;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -43,9 +46,9 @@ public class LivroController  implements GenericController {
             return ResponseEntity.created(url).location(url).build();
    
     }
-    @GetMapping
+    @GetMapping("{id}")
     public ResponseEntity<ResultadoPesquisaLivroDTO> obterDetalhes(
-            @PathVariable String id){  
+            @PathVariable("id") String id){  
         
         
         return service.obterPorId(id).map(livro -> {
@@ -53,7 +56,19 @@ public class LivroController  implements GenericController {
             }).orElseGet( () -> ResponseEntity.notFound().build());
         
      }
+    
+    @DeleteMapping("{id}")
+    public ResponseEntity<Object> deletar(@PathVariable String id){
         
+        return service.obterPorId(id).map
+                (livro -> {
+                 service.deletar(livro);
+                 return ResponseEntity.noContent().build();
+                }).orElseGet( () -> ResponseEntity.notFound().build());
+                
+    }
+        
+    
                 
                 
     }
