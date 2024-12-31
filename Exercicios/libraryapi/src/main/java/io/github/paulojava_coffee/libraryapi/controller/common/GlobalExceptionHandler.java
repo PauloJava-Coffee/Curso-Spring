@@ -4,6 +4,8 @@
  */
 package io.github.paulojava_coffee.libraryapi.controller.common;
 
+import io.github.paulojava_coffee.libraryapi.exceptios.OperacaoNaoPermitidaException;
+import io.github.paulojava_coffee.libraryapi.exceptios.RegistroDuplicadoException;
 import io.github.paulojava_coffee.libraryapi.model.ErroCampo;
 import io.github.paulojava_coffee.libraryapi.model.ErroResposta;
 import java.util.List;
@@ -20,12 +22,35 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
  */
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-    
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
-    public ErroResposta handleMethodArgumentNotValidException(MethodArgumentNotValidException e ){  
+    public ErroResposta handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
         List<FieldError> erros = e.getFieldErrors();
         List<ErroCampo> listaDeErros = erros.stream().map(fe -> new ErroCampo(fe.getField(), fe.getDefaultMessage())).toList();
         return new ErroResposta(HttpStatus.UNPROCESSABLE_ENTITY.value(), "Erro validação", listaDeErros);
+    }
+
+    @ExceptionHandler(RegistroDuplicadoException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ErroResposta handleregistroDuplicado(RegistroDuplicadoException e) {
+        return ErroResposta.conflito(e.getMessage());
+
+    }
+
+    @ExceptionHandler(OperacaoNaoPermitidaException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErroResposta handleOperacaoNaoPermitidaException(OperacaoNaoPermitidaException e) {
+        return ErroResposta.respostaPadrao(e.getMessage());
+    }
+
+    
+    @ExceptionHandler(RuntimeException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ErroResposta handleErrosNaoTratados(RuntimeException e) {
+
+        return new ErroResposta(HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                "Ocorreu um erro inesperado. Entre em contato com a administração",
+                 List.of());
     }
 }

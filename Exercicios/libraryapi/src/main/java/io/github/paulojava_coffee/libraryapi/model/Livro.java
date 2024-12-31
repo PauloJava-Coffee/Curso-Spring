@@ -58,8 +58,8 @@ public class Livro {
     @Column(name = "preco", precision = 18, scale = 2)
     private BigDecimal preco;
 
-    @ManyToOne( fetch = FetchType.LAZY,
-          cascade = CascadeType.ALL
+    @ManyToOne( fetch = FetchType.LAZY
+         // cascade = CascadeType.ALL
     
     ) // Cascade PERSIST usando para salvar um novo autor ao salvar um novo livro
     @JoinColumn

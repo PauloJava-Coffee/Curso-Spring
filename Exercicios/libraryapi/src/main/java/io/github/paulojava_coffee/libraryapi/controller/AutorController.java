@@ -39,28 +39,19 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("autores")
-public class AutorController {
+public class AutorController implements GenericController {
 
     private final AutorService service;
     private final AutorMapper mapper;
 
     @PostMapping
     public ResponseEntity<Object> salvar(@RequestBody @Valid AutorDTO dto) {
-        try {
             var autor = mapper.toEntity(dto);
             service.salvar(autor);
-            URI location = ServletUriComponentsBuilder
-                    .fromCurrentRequest()
-                    .path("/{id}")
-                    .buildAndExpand(autor.getId())
-                    .toUri();
+            URI location = gerarHeaderLocation(autor.getId());
 
             return ResponseEntity.created(location).build();
-
-        } catch (RegistroDuplicadoException erro) {
-            var erroDTO = ErroResposta.conflito(erro.getMessage());
-            return ResponseEntity.status(erroDTO.status()).body(erroDTO);
-        }
+       
     }
 
     @GetMapping("{id}")
