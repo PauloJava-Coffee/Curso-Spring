@@ -9,18 +9,22 @@ import io.github.paulojava_coffee.libraryapi.dto.ResultadoPesquisaLivroDTO;
 import io.github.paulojava_coffee.libraryapi.exceptios.RegistroDuplicadoException;
 import io.github.paulojava_coffee.libraryapi.mappers.LivroMapper;
 import io.github.paulojava_coffee.libraryapi.model.ErroResposta;
+import io.github.paulojava_coffee.libraryapi.model.GeneroLivro;
 import io.github.paulojava_coffee.libraryapi.model.Livro;
 import io.github.paulojava_coffee.libraryapi.repository.LivroRepository;
 import io.github.paulojava_coffee.libraryapi.service.LivroService;
 import jakarta.validation.Valid;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -33,46 +37,70 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("livros")
-public class LivroController  implements GenericController {
-    
+public class LivroController implements GenericController {
+
     private final LivroService service;
     private final LivroMapper mapper;
-    
+
     @PostMapping
-    public ResponseEntity<Object> salvar(@RequestBody @Valid CadastroLivroDTO dto){
-            Livro livro = mapper.toEntity(dto);
-            service.salvarLivro(livro);
-            var url = gerarHeaderLocation(livro.getId());
-            return ResponseEntity.created(url).location(url).build();
-   
+    public ResponseEntity<Object> salvar(@RequestBody @Valid CadastroLivroDTO dto) {
+        Livro livro = mapper.toEntity(dto);
+        service.salvarLivro(livro);
+        var url = gerarHeaderLocation(livro.getId());
+        return ResponseEntity.created(url).location(url).build();
+
     }
+
     @GetMapping("{id}")
     public ResponseEntity<ResultadoPesquisaLivroDTO> obterDetalhes(
-            @PathVariable("id") String id){  
-        
-        
+            @PathVariable("id") String id) {
+
         return service.obterPorId(id).map(livro -> {
             return ResponseEntity.ok(mapper.toDTO(livro));
-            }).orElseGet( () -> ResponseEntity.notFound().build());
-        
-     }
-    
-    @DeleteMapping("{id}")
-    public ResponseEntity<Object> deletar(@PathVariable String id){
-        
-        return service.obterPorId(id).map
-                (livro -> {
-                 service.deletar(livro);
-                 return ResponseEntity.noContent().build();
-                }).orElseGet( () -> ResponseEntity.notFound().build());
-                
-    }
-        
-    
-                
-                
-    }
-    
-   
-    
+        }).orElseGet(() -> ResponseEntity.notFound().build());
 
+    }
+
+    @DeleteMapping("{id}")
+    public ResponseEntity<Object> deletar(@PathVariable String id) {
+
+        return service.obterPorId(id).map(livro -> {
+            service.deletar(livro);
+            return ResponseEntity.noContent().build();
+        }).orElseGet(() -> ResponseEntity.notFound().build());
+
+    }
+
+    @GetMapping
+    public ResponseEntity<List<ResultadoPesquisaLivroDTO>> pesquisa(
+            @RequestParam(value = "isbn", required = false) String isbn,
+            @RequestParam(value = "titulo", required = false) String titulo,
+            @RequestParam(value = "nome-autor", required = false) String nomeAutor,
+            @RequestParam(value = "genero", required = false) GeneroLivro genero,
+            @RequestParam(value = "ano-publicacao", required = false) Integer anoPublicacao) {
+
+        var resultado = service.pesquisa(isbn, titulo, nomeAutor, genero, anoPublicacao);
+        var lista = resultado.stream().map(mapper::toDTO).collect(Collectors.toList());
+
+        return ResponseEntity.ok(lista);
+    }
+
+    @PutMapping("{id}")
+    public ResponseEntity<Object> editar(@PathVariable("id") String id,
+            @RequestBody @Valid CadastroLivroDTO dto ) {
+        
+
+        return service.obterPorId(id).map( livro -> {
+            Livro entidadeAux = mapper.toEntity(dto);
+            livro.setDataPublicacao(entidadeAux.getDataPublicacao());
+            livro.setIsbn(entidadeAux.getIsbn());
+           livro.setPreco(entidadeAux.getPreco());
+           livro.setGenero(entidadeAux.getGenero());
+           livro.setTitulo(entidadeAux.getTitulo());
+           livro.setAutor(entidadeAux.getAutor());
+           
+           service.atualizarLivro(livro);
+           return ResponseEntity.noContent().build();
+        }).orElseGet( () -> ResponseEntity.notFound().build());
+    }
+}
