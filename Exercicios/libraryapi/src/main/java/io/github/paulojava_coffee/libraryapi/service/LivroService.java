@@ -16,6 +16,9 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import static io.github.paulojava_coffee.libraryapi.repository.specs.LivroSpecs.*;
 import io.github.paulojava_coffee.libraryapi.validator.LivroValidator;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 /**
  *
@@ -43,8 +46,8 @@ public class LivroService {
         repository.delete(livro);
     }
 
-    public List<Livro> pesquisa(String isbn, String titulo, String nomeAutor, GeneroLivro genero,
-            Integer anoPublicacao
+    public Page<Livro> pesquisa(String isbn, String titulo, String nomeAutor, GeneroLivro genero,
+            Integer anoPublicacao, Integer pagina, Integer tamanhoPagina
     ) {
 
         //SELECT * FROM LIVRO WHERE 0 = 0
@@ -67,16 +70,17 @@ public class LivroService {
             //UTILIZANDO MÉTODO ESTÁTICO  IMPORTADO DE LivroSpecs
             specs = specs.and(anoPublicacaoEqual(anoPublicacao));
         }
-        if(nomeAutor != null){
+        if (nomeAutor != null) {
             specs = specs.and(nomeAutorLike(nomeAutor));
         }
-            
 
-        return repository.findAll(specs);
+        Pageable pageRequest = PageRequest.of(pagina, tamanhoPagina);
+                
+        return repository.findAll(specs, pageRequest);
     }
-    
-    public void atualizarLivro(Livro livro){
-        if(livro.getId() == null){
+
+    public void atualizarLivro(Livro livro) {
+        if (livro.getId() == null) {
             throw new IllegalArgumentException("Para atualizar, é necessário que o livro já esteja salvo na base de dados");
         }
         validator.validar(livro);
