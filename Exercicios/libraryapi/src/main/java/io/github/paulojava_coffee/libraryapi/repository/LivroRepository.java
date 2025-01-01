@@ -10,6 +10,7 @@ import io.github.paulojava_coffee.libraryapi.model.Livro;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -32,7 +33,7 @@ public interface LivroRepository extends JpaRepository<Livro, UUID> , JpaSpecifi
     List<Livro> findByTitulo(String titulo);
 
     //Select * from livro where isbn = ?
-    List<Livro> findByIsbn(String titulo);
+    Optional<Livro> findByIsbn(String titulo);
 
     //Select * from livro where titulo = ? and preco = ?
     List<Livro> findByTituloAndPreco(String titulo, BigDecimal preco);
@@ -85,4 +86,6 @@ public interface LivroRepository extends JpaRepository<Livro, UUID> , JpaSpecifi
     void updadeDataPublicacao(LocalDate novaData);
     
      boolean existsByAutor(Autor autor);
+     
+    
 }

@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import static io.github.paulojava_coffee.libraryapi.repository.specs.LivroSpecs.*;
+import io.github.paulojava_coffee.libraryapi.validator.LivroValidator;
 
 /**
  *
@@ -25,8 +26,10 @@ import static io.github.paulojava_coffee.libraryapi.repository.specs.LivroSpecs.
 public class LivroService {
 
     private final LivroRepository repository;
+    private final LivroValidator validator;
 
     public void salvarLivro(Livro livro) {
+        validator.validar(livro);
         repository.save(livro);
     }
 
@@ -76,6 +79,7 @@ public class LivroService {
         if(livro.getId() == null){
             throw new IllegalArgumentException("Para atualizar, é necessário que o livro já esteja salvo na base de dados");
         }
+        validator.validar(livro);
         repository.save(livro);
     }
 
