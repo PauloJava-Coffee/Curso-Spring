@@ -4,6 +4,7 @@
  */
 package io.github.paulojava_coffee.libraryapi.controller.common;
 
+import io.github.paulojava_coffee.libraryapi.exceptios.CampoInvalidoException;
 import io.github.paulojava_coffee.libraryapi.exceptios.OperacaoNaoPermitidaException;
 import io.github.paulojava_coffee.libraryapi.exceptios.RegistroDuplicadoException;
 import io.github.paulojava_coffee.libraryapi.model.ErroCampo;
@@ -43,12 +44,21 @@ public class GlobalExceptionHandler {
     public ErroResposta handleOperacaoNaoPermitidaException(OperacaoNaoPermitidaException e) {
         return ErroResposta.respostaPadrao(e.getMessage());
     }
+    
+    @ExceptionHandler(CampoInvalidoException.class)
+    @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
+    public ErroResposta handleCampoIvalidoException(CampoInvalidoException e){
+        
+        return new ErroResposta(HttpStatus.UNPROCESSABLE_ENTITY.value(),"Erro de validação",
+            List.of(new ErroCampo(e.getCampo(), e.getMessage())));
+    }
 
     
     @ExceptionHandler(RuntimeException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErroResposta handleErrosNaoTratados(RuntimeException e) {
-
+        System.out.println(e);
+        
         return new ErroResposta(HttpStatus.INTERNAL_SERVER_ERROR.value(),
                 "Ocorreu um erro inesperado. Entre em contato com a administração",
                  List.of());
