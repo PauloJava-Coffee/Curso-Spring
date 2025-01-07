@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import static io.github.paulojava_coffee.libraryapi.repository.specs.LivroSpecs.*;
+import io.github.paulojava_coffee.libraryapi.security.SecurityService;
 import io.github.paulojava_coffee.libraryapi.validator.LivroValidator;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -29,9 +30,11 @@ public class LivroService {
 
     private final LivroRepository repository;
     private final LivroValidator validator;
+    private final SecurityService securityService;
 
     public void salvarLivro(Livro livro) {
         validator.validar(livro);
+        livro.setUsuario(securityService.obterUsuarioLogado());
         repository.save(livro);
     }
 

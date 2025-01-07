@@ -6,21 +6,15 @@ package io.github.paulojava_coffee.libraryapi.controller;
 
 import io.github.paulojava_coffee.libraryapi.dto.CadastroLivroDTO;
 import io.github.paulojava_coffee.libraryapi.dto.ResultadoPesquisaLivroDTO;
-import io.github.paulojava_coffee.libraryapi.exceptios.RegistroDuplicadoException;
 import io.github.paulojava_coffee.libraryapi.mappers.LivroMapper;
-import io.github.paulojava_coffee.libraryapi.model.ErroResposta;
 import io.github.paulojava_coffee.libraryapi.model.GeneroLivro;
 import io.github.paulojava_coffee.libraryapi.model.Livro;
-import io.github.paulojava_coffee.libraryapi.repository.LivroRepository;
 import io.github.paulojava_coffee.libraryapi.service.LivroService;
 import jakarta.validation.Valid;
-import java.math.BigDecimal;
-import java.util.List;
-import java.util.UUID;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -38,12 +32,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("livros")
+//@PreAuthorize("hasAnyRole('OPERADOR', 'GERENTE')")
 public class LivroController implements GenericController {
 
     private final LivroService service;
     private final LivroMapper mapper;
 
     @PostMapping
+    @PreAuthorize("hasAnyRole('OPERADOR', 'GERENTE')")
     public ResponseEntity<Object> salvar(@RequestBody @Valid CadastroLivroDTO dto) {
         Livro livro = mapper.toEntity(dto);
         service.salvarLivro(livro);
@@ -53,6 +49,7 @@ public class LivroController implements GenericController {
     }
 
     @GetMapping("{id}")
+    @PreAuthorize("hasAnyRole('OPERADOR', 'GERENTE')")
     public ResponseEntity<ResultadoPesquisaLivroDTO> obterDetalhes(
             @PathVariable("id") String id) {
 
@@ -63,6 +60,7 @@ public class LivroController implements GenericController {
     }
 
     @DeleteMapping("{id}")
+    @PreAuthorize("hasAnyRole('OPERADOR', 'GERENTE')")
     public ResponseEntity<Object> deletar(@PathVariable String id) {
 
         return service.obterPorId(id).map(livro -> {
@@ -73,6 +71,7 @@ public class LivroController implements GenericController {
     }
 
     @GetMapping
+    @PreAuthorize("hasAnyRole('OPERADOR', 'GERENTE')")
     public ResponseEntity<Page<ResultadoPesquisaLivroDTO>> pesquisa(
             @RequestParam(value = "isbn", required = false) String isbn,
             @RequestParam(value = "titulo", required = false) String titulo,
@@ -93,6 +92,7 @@ public class LivroController implements GenericController {
     }
 
     @PutMapping("{id}")
+    @PreAuthorize("hasAnyRole('OPERADOR', 'GERENTE')")
     public ResponseEntity<Object> editar(@PathVariable("id") String id,
             @RequestBody @Valid CadastroLivroDTO dto ) {
         

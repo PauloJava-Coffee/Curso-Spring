@@ -10,7 +10,10 @@ import io.github.paulojava_coffee.libraryapi.exceptios.RegistroDuplicadoExceptio
 import io.github.paulojava_coffee.libraryapi.mappers.AutorMapper;
 import io.github.paulojava_coffee.libraryapi.model.Autor;
 import io.github.paulojava_coffee.libraryapi.model.ErroResposta;
+import io.github.paulojava_coffee.libraryapi.model.Usuario;
+import io.github.paulojava_coffee.libraryapi.security.SecurityService;
 import io.github.paulojava_coffee.libraryapi.service.AutorService;
+import io.github.paulojava_coffee.libraryapi.service.UsuarioService;
 import jakarta.validation.Valid;
 import java.net.URI;
 import java.util.List;
@@ -21,6 +24,9 @@ import static org.springframework.data.projection.EntityProjection.ProjectionTyp
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -43,26 +49,32 @@ public class AutorController implements GenericController {
 
     private final AutorService service;
     private final AutorMapper mapper;
+    private final SecurityService securityService;
 
     @PostMapping
-    public ResponseEntity<Object> salvar(@RequestBody @Valid AutorDTO dto) {
-            var autor = mapper.toEntity(dto);
-            service.salvar(autor);
-            URI location = gerarHeaderLocation(autor.getId());
+    @PreAuthorize("hasAnyRole('GERENTE')")
+    public ResponseEntity<Object> salvar(@RequestBody @Valid AutorDTO dto, Authentication athentication) {
+      /*  
+        UserDetails usuarioLogado = (UserDetails) athentication.getPrincipal();
+        Usuario usuatio = securityService.obterUsuarioLogado();*/
+        var autor = mapper.toEntity(dto);
+        service.salvar(autor);
+        URI location = gerarHeaderLocation(autor.getId());
 
-            return ResponseEntity.created(location).build();
-       
+        return ResponseEntity.created(location).build();
+
     }
 
     @GetMapping("{id}")
+    @PreAuthorize("hasAnyRole('GERENTE','OPERADOR')")
     public ResponseEntity<AutorDTO> obterDetalhes(@PathVariable("id") String id) {
         var idAutor = UUID.fromString(id);
         Optional<Autor> autorOptional = service.findById(idAutor);
 
         return service.findById(idAutor).map(x -> {
-          return ResponseEntity.ok(mapper.toDTO(x));
-        }).orElseGet( () -> ResponseEntity.notFound().build());
-        
+            return ResponseEntity.ok(mapper.toDTO(x));
+        }).orElseGet(() -> ResponseEntity.notFound().build());
+
         /*
         if (autorOptional.isPresent()) {
             Autor autor = autorOptional.get();
@@ -74,6 +86,7 @@ public class AutorController implements GenericController {
     }
 
     @DeleteMapping("{id}")
+    @PreAuthorize("hasRole('GERENTE')")
     public ResponseEntity<Object> deletarAutor(@PathVariable String id) {
         try {
             var optionalAutor = service.findById(UUID.fromString(id));
@@ -88,13 +101,15 @@ public class AutorController implements GenericController {
     }
 
     @GetMapping
+    @PreAuthorize("hasAnyRole('GERENTE','OPERADOR')")
     public ResponseEntity<List<AutorDTO>> pesquisar(@RequestParam(value = "nome",
             required = false) String nome, @RequestParam(value = "nacionalidade",
-                    required = false) String nacinalidade) {
+            required = false) String nacinalidade) {
         return ResponseEntity.ok(service.findByExemplo(nome, nacinalidade));
     }
 
     @PutMapping("{id}")
+    @PreAuthorize("hasRole('GERENTE')")
     public ResponseEntity<Object> atualizar(@PathVariable("id") String id, @RequestBody @Valid AutorDTO dto) {
         try {
             var idAutor = UUID.fromString(id);

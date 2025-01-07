@@ -73,6 +73,8 @@ public class Livro {
     @Column(columnDefinition = "timestamp")
     private LocalDateTime dataAtualizacao;
     
-    private  Integer  idusuario;
+    @ManyToOne
+    @JoinColumn
+    private  Usuario usuario;
 
 }

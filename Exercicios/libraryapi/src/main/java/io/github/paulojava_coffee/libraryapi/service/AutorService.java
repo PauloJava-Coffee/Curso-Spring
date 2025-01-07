@@ -8,8 +8,10 @@ import io.github.paulojava_coffee.libraryapi.dto.AutorDTO;
 import io.github.paulojava_coffee.libraryapi.exceptios.OperacaoNaoPermitidaException;
 import io.github.paulojava_coffee.libraryapi.mappers.AutorMapper;
 import io.github.paulojava_coffee.libraryapi.model.Autor;
+import io.github.paulojava_coffee.libraryapi.model.Usuario;
 import io.github.paulojava_coffee.libraryapi.repository.AutorRepository;
 import io.github.paulojava_coffee.libraryapi.repository.LivroRepository;
+import io.github.paulojava_coffee.libraryapi.security.SecurityService;
 import io.github.paulojava_coffee.libraryapi.validator.AutorValidador;
 import java.time.LocalDate;
 import java.util.List;
@@ -35,9 +37,12 @@ public class AutorService {
     private final LivroRepository livroRepository;
     private final AutorValidador validador;
     private final AutorMapper mapper;
+    private final SecurityService securityService;
 
     public Autor salvar(Autor autor) {
         validador.validar(autor);
+        Usuario usuario = securityService.obterUsuarioLogado();
+        autor.setUsuario(usuario);
         return repository.save(autor);
     }
 
@@ -93,9 +98,7 @@ public class AutorService {
                 .withIgnoreNullValues()
                 .withIgnoreCase()
                 .withStringMatcher(StringMatcher.CONTAINING);
-
         Example<Autor> autorExemplo = Example.of(autor, matcher);
-
         return repository.findAll(autorExemplo).stream().map(mapper::toDTO).toList();
     }
 
