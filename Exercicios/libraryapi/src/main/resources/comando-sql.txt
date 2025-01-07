@@ -17,3 +17,10 @@ preco numeric(18,2),
 id_autor uuid not null references autor(id),
 constraint chk_genero check(genero in ('FICCAO','FANTASIA','MISTERIO','ROMANCE','BIOGRAFIA','CIENCIA'))
 );
+
+create table usuario(
+id UUID primary key,
+login varchar(20) not null unique,
+senha varchar(300) not null,
+roles varchar[]
+);
