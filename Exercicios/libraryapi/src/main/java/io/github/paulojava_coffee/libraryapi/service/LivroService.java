@@ -36,12 +36,10 @@ public class LivroService {
     }
 
     public Optional<Livro> obterPorId(String id) {
-
         return repository.findById(UUID.fromString(id));
     }
 
     public void deletar(Livro livro) {
-
         repository.delete(livro);
     }
 
