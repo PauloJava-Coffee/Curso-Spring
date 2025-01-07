@@ -5,6 +5,8 @@
 package io.github.paulojava_coffee.libraryapi.config;
 
 
+import io.github.paulojava_coffee.libraryapi.security.CustomUserDetailsService;
+import io.github.paulojava_coffee.libraryapi.service.UsuarioService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -12,12 +14,9 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
 /**
@@ -37,6 +36,7 @@ public class SecurityConfiguration {
                 .httpBasic(Customizer.withDefaults())
                 .authorizeHttpRequests(authorize -> {
                     authorize.requestMatchers("/login").permitAll();
+                    authorize.requestMatchers(HttpMethod.POST,"/usuarios/**").permitAll();
                     authorize.requestMatchers("/autores/**").hasRole("ADMIN");
                     authorize.requestMatchers("/livros/**").authenticated();
                     authorize.anyRequest().authenticated();
@@ -50,8 +50,8 @@ public class SecurityConfiguration {
     }
     
     @Bean
-    public UserDetailsService userDetailsService(PasswordEncoder encoder){
-        UserDetails user = User.builder()
+    public UserDetailsService userDetailsService(UsuarioService usuarioService){
+      /*  UserDetails user = User.builder()
                 .username("Paulo")
                 .password(encoder.encode("123"))
                 .roles("USER").build()
@@ -62,6 +62,8 @@ public class SecurityConfiguration {
                 .password(encoder.encode("456"))
                 .roles("ADMIN").build()
                 ;
-        return new InMemoryUserDetailsManager(user, user2);
+        return new InMemoryUserDetailsManager(user, user2);*/
+      
+      return new CustomUserDetailsService(usuarioService);
     }
 }
