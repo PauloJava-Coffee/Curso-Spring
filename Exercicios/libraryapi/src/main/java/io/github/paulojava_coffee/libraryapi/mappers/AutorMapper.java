@@ -15,10 +15,8 @@ import org.mapstruct.Mapping;
  */
 @Mapper(componentModel = "spring")
 public interface AutorMapper {
-    /* USADO PARA MAPEAR QUANDO O NOME DE UM 
-     * ATRIBUTO ESTÁ DIFERENTE NO DTO 
-    * */
-    @Mapping(source = "nome", target = "nome") 
+    
+    @Mapping(source = "nome", target = "nome") //  USADO PARA MAPEAR QUANDO O NOME DE UM ATRIBUTO ESTÁ DIFERENTE NO DTO 
     Autor toEntity(AutorDTO dto);
     
     AutorDTO toDTO(Autor entity);

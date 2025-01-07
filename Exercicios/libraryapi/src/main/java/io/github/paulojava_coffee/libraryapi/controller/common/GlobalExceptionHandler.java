@@ -48,7 +48,6 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(CampoInvalidoException.class)
     @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
     public ErroResposta handleCampoIvalidoException(CampoInvalidoException e){
-        
         return new ErroResposta(HttpStatus.UNPROCESSABLE_ENTITY.value(),"Erro de validação",
             List.of(new ErroCampo(e.getCampo(), e.getMessage())));
     }

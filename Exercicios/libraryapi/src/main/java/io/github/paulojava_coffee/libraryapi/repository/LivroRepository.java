@@ -64,7 +64,7 @@ public interface LivroRepository extends JpaRepository<Livro, UUID> , JpaSpecifi
     )
     List<String> listarGeneroOnNacionalidade();
 
-    //Namaed parameters -> parametros nomeados
+    //Namade parameters -> parametros nomeados
     @Query("Select l from Livro l where l.genero = :genero order by :filtro")
     List<Livro> findByGenero(
             @Param("genero") GeneroLivro genero,
