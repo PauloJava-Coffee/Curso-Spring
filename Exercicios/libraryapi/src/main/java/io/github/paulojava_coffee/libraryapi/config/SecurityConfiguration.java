@@ -4,8 +4,8 @@
  */
 package io.github.paulojava_coffee.libraryapi.config;
 
-
 import io.github.paulojava_coffee.libraryapi.security.CustomUserDetailsService;
+import io.github.paulojava_coffee.libraryapi.security.LoginSocialSuccessHandler;
 import io.github.paulojava_coffee.libraryapi.service.UsuarioService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,6 +15,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.core.GrantedAuthorityDefaults;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -28,30 +29,38 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 @EnableMethodSecurity(securedEnabled = true, jsr250Enabled = true)
 public class SecurityConfiguration {
-  
+    
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
+    public SecurityFilterChain securityFilterChain(HttpSecurity http,
+            LoginSocialSuccessHandler successHandler
+    ) throws Exception {
         return http.csrf(AbstractHttpConfigurer::disable)
                 .formLogin(configurer -> {
                     configurer.loginPage("/login").permitAll();
                 })
+                //.formLogin(Customizer.withDefaults())
                 .httpBasic(Customizer.withDefaults())
                 .authorizeHttpRequests(authorize -> {
                     authorize.requestMatchers("/login").permitAll();
-                    authorize.requestMatchers(HttpMethod.POST,"/usuarios/**").permitAll();
+                    authorize.requestMatchers(HttpMethod.POST, "/usuarios/**").permitAll();
                     authorize.anyRequest().authenticated();
+                })
+                .oauth2Login(oauth2 -> {
+                    oauth2
+                         .loginPage("/login")
+                         .successHandler(successHandler);
                 })
                 .build();
     }
     
     @Bean
-    public PasswordEncoder  passwordEncoder(){
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder(10);
     }
     
     @Bean
-    public UserDetailsService userDetailsService(UsuarioService usuarioService){
-      /*  UserDetails user = User.builder()
+    public UserDetailsService userDetailsService(UsuarioService usuarioService) {
+        /*  UserDetails user = User.builder()
                 .username("Paulo")
                 .password(encoder.encode("123"))
                 .roles("USER").build()
@@ -63,7 +72,13 @@ public class SecurityConfiguration {
                 .roles("ADMIN").build()
                 ;
         return new InMemoryUserDetailsManager(user, user2);*/
-      
-      return new CustomUserDetailsService(usuarioService);
+        
+        return new CustomUserDetailsService(usuarioService);
+        
+    }
+    
+    @Bean
+    public GrantedAuthorityDefaults grantedAuthorityDefaults() {
+        return new GrantedAuthorityDefaults("");
     }
 }

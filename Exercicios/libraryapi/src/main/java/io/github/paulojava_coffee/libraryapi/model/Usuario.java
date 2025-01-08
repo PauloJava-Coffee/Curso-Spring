@@ -29,7 +29,7 @@ public class Usuario {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(nullable = false, unique = true, length = 20)
+    @Column(nullable = false, unique = true, length = 150)
     private String login;
 
     @Column(nullable = false, length = 300)
@@ -38,4 +38,7 @@ public class Usuario {
     @Type(ListArrayType.class)
     @Column(name = "roles", columnDefinition = "varchar[]")
     private List<String> roles;
+   
+    @Column(nullable = false, length = 150)
+    private String email;
 }

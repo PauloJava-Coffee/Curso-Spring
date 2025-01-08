@@ -6,12 +6,16 @@ package io.github.paulojava_coffee.libraryapi.repository;
 
 import io.github.paulojava_coffee.libraryapi.dto.AutorDTO;
 import io.github.paulojava_coffee.libraryapi.model.Autor;
+import io.github.paulojava_coffee.libraryapi.model.Usuario;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  *
@@ -32,5 +36,10 @@ public interface AutorRepository extends JpaRepository<Autor, UUID> {
      String nome, LocalDate dataNascimento, String nacionalidade
     );
     
+    /*
+    @Transactional
+    @Modifying
+    @Query("update  Autor set usuario = :i")
+     void limpar(@Param("i") Usuario i);*/
     
 }

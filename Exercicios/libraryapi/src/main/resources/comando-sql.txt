@@ -28,5 +28,6 @@ create table usuario(
 id UUID primary key,
 login varchar(20) not null unique,
 senha varchar(300) not null,
-roles varchar[]
+roles varchar[],
+email varchar(150) not null
 );

@@ -7,6 +7,7 @@ package io.github.paulojava_coffee.libraryapi.repository;
 import io.github.paulojava_coffee.libraryapi.model.Autor;
 import io.github.paulojava_coffee.libraryapi.model.GeneroLivro;
 import io.github.paulojava_coffee.libraryapi.model.Livro;
+import io.github.paulojava_coffee.libraryapi.model.Usuario;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
@@ -23,9 +24,8 @@ import org.springframework.transaction.annotation.Transactional;
  *
  * @author barbo
  */
-public interface LivroRepository extends JpaRepository<Livro, UUID> , JpaSpecificationExecutor<Livro> {
+public interface LivroRepository extends JpaRepository<Livro, UUID>, JpaSpecificationExecutor<Livro> {
 
-   
     //Query method
     List<Livro> findByAutor(Autor autor);
 
@@ -76,7 +76,7 @@ public interface LivroRepository extends JpaRepository<Livro, UUID> , JpaSpecifi
 
     @Modifying
     @Transactional
-    
+
     @Query("delete from Livro l where l.genero = ?1")
     void deleteByGenero(GeneroLivro genero);
 
@@ -84,8 +84,11 @@ public interface LivroRepository extends JpaRepository<Livro, UUID> , JpaSpecifi
     @Transactional
     @Query("Update Livro set dataPublicacao = ?1")
     void updadeDataPublicacao(LocalDate novaData);
-    
-     boolean existsByAutor(Autor autor);
-     
-    
+
+    boolean existsByAutor(Autor autor);
+
+   /* @Transactional
+    @Modifying
+    @Query("update Livro set usuario = :i")
+    void limpar(@Param("i") Usuario i);*/
 }
