@@ -38,7 +38,7 @@ public class SecurityConfiguration {
                 .formLogin(configurer -> {
                     configurer.loginPage("/login").permitAll();
                 })
-                //.formLogin(Customizer.withDefaults())
+               // .formLogin(Customizer.withDefaults())
                 .httpBasic(Customizer.withDefaults())
                 .authorizeHttpRequests(authorize -> {
                     authorize.requestMatchers("/login").permitAll();
@@ -60,7 +60,7 @@ public class SecurityConfiguration {
     
     @Bean
     public UserDetailsService userDetailsService(UsuarioService usuarioService) {
-        /*  UserDetails user = User.builder()
+         /* UserDetails user = User.builder()
                 .username("Paulo")
                 .password(encoder.encode("123"))
                 .roles("USER").build()

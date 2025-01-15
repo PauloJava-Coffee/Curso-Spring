@@ -16,7 +16,6 @@ import org.springframework.security.oauth2.client.authentication.OAuth2Authentic
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
-import io.github.paulojava_coffee.libraryapi.security.CustomAuthentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 /**

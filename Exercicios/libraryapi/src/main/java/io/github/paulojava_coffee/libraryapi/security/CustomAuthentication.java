@@ -53,7 +53,7 @@ public class CustomAuthentication implements Authentication {
 
     @Override
     public void setAuthenticated(boolean isAuthenticated) throws IllegalArgumentException {
-        
+       
     }
 
     @Override
@@ -63,7 +63,7 @@ public class CustomAuthentication implements Authentication {
 
     @Override
     public boolean implies(Subject subject) {
-        return Authentication.super.implies(subject); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/OverriddenMethodBody
+        return Authentication.super.implies(subject); 
     }
 
 }

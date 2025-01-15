@@ -4,6 +4,7 @@
  */
 package io.github.paulojava_coffee.libraryapi.security;
 
+import io.github.paulojava_coffee.libraryapi.model.Usuario;
 import io.github.paulojava_coffee.libraryapi.service.UsuarioService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -29,6 +30,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
       String login =   authentication.getName();
       String senhaDigitada = authentication.getCredentials().toString();
+     
       var usuarioEncontrado = usuarioService.obterPorLogin(login);
       
       if (usuarioEncontrado == null){
