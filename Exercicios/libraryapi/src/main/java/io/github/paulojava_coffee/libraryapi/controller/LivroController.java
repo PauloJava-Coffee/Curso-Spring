@@ -49,10 +49,9 @@ public class LivroController implements GenericController {
     }
 
     @GetMapping("{id}")
-    @PreAuthorize("hasAnyRole('OPERADOR', 'GERENTE')")
+    @PreAuthorize("hasAnyRole('OPERADOR', 'GERENTE', 'ADMIN')")
     public ResponseEntity<ResultadoPesquisaLivroDTO> obterDetalhes(
             @PathVariable("id") String id) {
-
         return service.obterPorId(id).map(livro -> {
             return ResponseEntity.ok(mapper.toDTO(livro));
         }).orElseGet(() -> ResponseEntity.notFound().build());
@@ -67,11 +66,10 @@ public class LivroController implements GenericController {
             service.deletar(livro);
             return ResponseEntity.noContent().build();
         }).orElseGet(() -> ResponseEntity.notFound().build());
-
     }
 
     @GetMapping
-    @PreAuthorize("hasAnyRole('OPERADOR', 'GERENTE')")
+    @PreAuthorize("hasAnyRole('OPERADOR', 'GERENTE', 'ADMIN')")
     public ResponseEntity<Page<ResultadoPesquisaLivroDTO>> pesquisa(
             @RequestParam(value = "isbn", required = false) String isbn,
             @RequestParam(value = "titulo", required = false) String titulo,
@@ -79,35 +77,34 @@ public class LivroController implements GenericController {
             @RequestParam(value = "genero", required = false) GeneroLivro genero,
             @RequestParam(value = "ano-publicacao", required = false) Integer anoPublicacao,
             @RequestParam(value = "pagina", defaultValue = "0") Integer pagina,
-            @RequestParam(value = "tamanho-pagina", defaultValue = "10")Integer tamanhoPagina) {
+            @RequestParam(value = "tamanho-pagina", defaultValue = "10") Integer tamanhoPagina) {
 
-        Page<Livro> paginaResultado = service.pesquisa(isbn, titulo, nomeAutor, genero, 
+        Page<Livro> paginaResultado = service.pesquisa(isbn, titulo, nomeAutor, genero,
                 anoPublicacao, pagina, tamanhoPagina);
-        
-       Page<ResultadoPesquisaLivroDTO> resultado =  paginaResultado.map(mapper::toDTO);
-        
-        //var lista = resultado.stream().map(mapper::toDTO).collect(Collectors.toList());
 
+        Page<ResultadoPesquisaLivroDTO> resultado = paginaResultado.map(mapper::toDTO);
+
+        //var lista = resultado.stream().map(mapper::toDTO).collect(Collectors.toList());
         return ResponseEntity.ok(resultado);
     }
 
     @PutMapping("{id}")
     @PreAuthorize("hasAnyRole('OPERADOR', 'GERENTE')")
     public ResponseEntity<Object> editar(@PathVariable("id") String id,
-            @RequestBody @Valid CadastroLivroDTO dto ) {
-        
+            @RequestBody @Valid CadastroLivroDTO dto) {
 
-        return service.obterPorId(id).map( livro -> {
+        return service.obterPorId(id).map(livro -> {
             Livro entidadeAux = mapper.toEntity(dto);
             livro.setDataPublicacao(entidadeAux.getDataPublicacao());
             livro.setIsbn(entidadeAux.getIsbn());
-           livro.setPreco(entidadeAux.getPreco());
-           livro.setGenero(entidadeAux.getGenero());
-           livro.setTitulo(entidadeAux.getTitulo());
-           livro.setAutor(entidadeAux.getAutor());
-           
-           service.atualizarLivro(livro);
-           return ResponseEntity.noContent().build();
-        }).orElseGet( () -> ResponseEntity.notFound().build());
+            livro.setPreco(entidadeAux.getPreco());
+            livro.setGenero(entidadeAux.getGenero());
+            livro.setTitulo(entidadeAux.getTitulo());
+            livro.setAutor(entidadeAux.getAutor());
+
+            service.atualizarLivro(livro);
+            return ResponseEntity.noContent().build();
+        }).orElseGet(() -> ResponseEntity.notFound().build());
     }
+
 }

@@ -4,9 +4,17 @@
  */
 package io.github.paulojava_coffee.libraryapi.config;
 
-import io.github.paulojava_coffee.libraryapi.security.CustomUserDetailsService;
+import com.nimbusds.jose.jwk.JWKSet;
+import com.nimbusds.jose.jwk.RSAKey;
+import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
+import com.nimbusds.jose.jwk.source.JWKSource;
+import com.nimbusds.jose.proc.SecurityContext;
 import io.github.paulojava_coffee.libraryapi.security.LoginSocialSuccessHandler;
-import io.github.paulojava_coffee.libraryapi.service.UsuarioService;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.security.interfaces.RSAPrivateKey;
+import java.security.interfaces.RSAPublicKey;
+import java.util.UUID;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -16,9 +24,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.core.GrantedAuthorityDefaults;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.security.oauth2.server.authorization.config.annotation.web.configuration.OAuth2AuthorizationServerConfiguration;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
@@ -71,5 +78,35 @@ public class SecurityConfiguration {
         var converter = new JwtAuthenticationConverter();
         converter.setJwtGrantedAuthoritiesConverter(authoritiesConverter);
         return converter;
+    }
+    
+    //JWT - JSON WEB KEY
+    @Bean
+    public JWKSource<SecurityContext> jwkSource()throws Exception {
+        RSAKey rsaKey = gerarChaveRSA();
+        JWKSet jwkSet = new JWKSet(rsaKey);
+      
+        return new ImmutableJWKSet<>(jwkSet);
+    }
+
+    
+    //GERAR PAR DE CHAVES RSA
+    private RSAKey gerarChaveRSA() throws Exception {   
+        KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
+        keyPairGenerator.initialize(2048);
+        
+        KeyPair keyPair = keyPairGenerator.generateKeyPair();
+        RSAPublicKey chavePublica = (RSAPublicKey) keyPair.getPublic();
+        RSAPrivateKey chavePrivada = (RSAPrivateKey) keyPair.getPrivate();
+        
+        return new RSAKey.Builder(chavePublica)
+                .privateKey(chavePrivada)
+                .keyID(UUID.randomUUID().toString())
+                .build();
+    }
+    
+    @Bean 
+    public JwtDecoder jwtDecoder(JWKSource<SecurityContext> source){
+        return OAuth2AuthorizationServerConfiguration.jwtDecoder(source);
     }
 }

@@ -15,6 +15,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.server.authorization.config.annotation.web.configuration.OAuth2AuthorizationServerConfiguration;
 import org.springframework.security.oauth2.server.authorization.config.annotation.web.configurers.OAuth2AuthorizationServerConfigurer;
+import org.springframework.security.oauth2.server.authorization.settings.AuthorizationServerSettings;
 import org.springframework.security.oauth2.server.authorization.settings.ClientSettings;
 import org.springframework.security.oauth2.server.authorization.settings.OAuth2TokenFormat;
 import org.springframework.security.oauth2.server.authorization.settings.TokenSettings;
@@ -27,43 +28,64 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 @EnableWebSecurity
 public class AuthorizationServerConfi {
-    
-    
+
     @Bean
     @Order(1)
     public SecurityFilterChain authServerSecurityFilterChain(
-       HttpSecurity http   
-    ) throws Exception{
+            HttpSecurity http
+    ) throws Exception {
         OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(http);
-        
+
         http.getConfigurer(OAuth2AuthorizationServerConfigurer.class)
                 .oidc(Customizer.withDefaults());
-        
+
         http.oauth2ResourceServer(oAuth2Rs -> oAuth2Rs.jwt(Customizer.withDefaults()));
         http.formLogin(configurer -> configurer.loginPage("/login"));
-        
+
         return http.build();
     }
-    
+
     @Bean
-    public PasswordEncoder passwordEncoder(){
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder(10);
     }
-    
-    
+
     @Bean
-    public TokenSettings tokenSettings(){
-        
+    public TokenSettings tokenSettings() {
+
         return TokenSettings.builder()
                 .accessTokenFormat(OAuth2TokenFormat.SELF_CONTAINED)
+                //ACCESS_TOKEN: TOKEN UTILIZADO NAS REQUISIÇÕES
                 .accessTokenTimeToLive(Duration.ofMinutes(60))
+                //REFRESH_TOKEN : TOKEN UTILIZADO PARA ATUALIZADO OO ACCESS_TOKEN
+                .refreshTokenTimeToLive(Duration.ofMinutes(90))
                 .build();
     }
-    
+
     @Bean
-    public ClientSettings ClientSettings(){
+    public ClientSettings ClientSettings() {
         return ClientSettings.builder()
                 .requireAuthorizationConsent(false)
+                .build();
+    }
+
+    @Bean
+    public AuthorizationServerSettings authorizationServerSettings() {
+        return AuthorizationServerSettings.builder()
+                ///Obter token
+                .tokenEndpoint("/oauth2/token")
+                //Consultar token
+                .tokenIntrospectionEndpoint("/oauth2/introspect")
+                //Revogar
+                .tokenRevocationEndpoint("/oauth2/revoke")
+                //authorization endPoint
+                .authorizationEndpoint("/oauth2/authorize")
+                // informações do usuario OPEN ID CONNECT
+                .oidcUserInfoEndpoint("/oauth2/userinfo")
+                //obter chave publica para verificar a assinatura do token
+                .jwkSetEndpoint("/oauth2/jwks")
+                // logout
+                .oidcLogoutEndpoint("/oauth2/logout")
                 .build();
     }
 }
