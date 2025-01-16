@@ -29,7 +29,7 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 @EnableMethodSecurity(securedEnabled = true, jsr250Enabled = true)
 public class SecurityConfiguration {
-    
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http,
             LoginSocialSuccessHandler successHandler
@@ -38,7 +38,7 @@ public class SecurityConfiguration {
                 .formLogin(configurer -> {
                     configurer.loginPage("/login").permitAll();
                 })
-               // .formLogin(Customizer.withDefaults())
+                // .formLogin(Customizer.withDefaults())
                 .httpBasic(Customizer.withDefaults())
                 .authorizeHttpRequests(authorize -> {
                     authorize.requestMatchers("/login").permitAll();
@@ -47,36 +47,12 @@ public class SecurityConfiguration {
                 })
                 .oauth2Login(oauth2 -> {
                     oauth2
-                         .loginPage("/login")
-                         .successHandler(successHandler);
+                            .loginPage("/login")
+                            .successHandler(successHandler);
                 })
                 .build();
     }
-    
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder(10);
-    }
-    
-    @Bean
-    public UserDetailsService userDetailsService(UsuarioService usuarioService) {
-         /* UserDetails user = User.builder()
-                .username("Paulo")
-                .password(encoder.encode("123"))
-                .roles("USER").build()
-                ;
-        
-        UserDetails user2 = User.builder()
-                .username("Ricardo")
-                .password(encoder.encode("456"))
-                .roles("ADMIN").build()
-                ;
-        return new InMemoryUserDetailsManager(user, user2);*/
-        
-        return new CustomUserDetailsService(usuarioService);
-        
-    }
-    
+
     @Bean
     public GrantedAuthorityDefaults grantedAuthorityDefaults() {
         return new GrantedAuthorityDefaults("");
