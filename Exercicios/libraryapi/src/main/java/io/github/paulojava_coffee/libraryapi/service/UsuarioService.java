@@ -7,6 +7,7 @@ package io.github.paulojava_coffee.libraryapi.service;
 import io.github.paulojava_coffee.libraryapi.model.Usuario;
 import io.github.paulojava_coffee.libraryapi.repository.UsuarioRepository;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -36,7 +37,7 @@ public class UsuarioService {
         return repository.findByLogin(login);
     }
     
-    public Usuario obterPorEmail(String email){
+    public Optional<Usuario> obterPorEmail(String email){
         return repository.findByEmail(email);
     }
     

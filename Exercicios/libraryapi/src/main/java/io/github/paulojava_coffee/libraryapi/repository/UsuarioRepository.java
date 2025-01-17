@@ -5,6 +5,7 @@
 package io.github.paulojava_coffee.libraryapi.repository;
 
 import io.github.paulojava_coffee.libraryapi.model.Usuario;
+import java.util.Optional;
 import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -15,5 +16,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface UsuarioRepository extends JpaRepository<Usuario,UUID> {
     Usuario findByLogin(String login);
     
-    Usuario findByEmail(String email);
+    Optional<Usuario> findByEmail(String email);
 }

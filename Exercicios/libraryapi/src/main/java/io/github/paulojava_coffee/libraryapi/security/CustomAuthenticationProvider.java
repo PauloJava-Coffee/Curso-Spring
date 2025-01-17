@@ -25,35 +25,42 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 
     private final UsuarioService usuarioService;
     private final PasswordEncoder encoder;
-    
+
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-      String login =   authentication.getName();
-      String senhaDigitada = authentication.getCredentials().toString();
-     
-      var usuarioEncontrado = usuarioService.obterPorLogin(login);
-      
-      if (usuarioEncontrado == null){
-          throw getErroUsuarioNaoEncontrado();
-      }
-      
-     String  senhaCriptografada = usuarioEncontrado.getSenha();
-     
-     boolean senhasBatem = encoder.matches(senhaDigitada, senhaCriptografada);
-      
-     if(senhasBatem){
-         return new CustomAuthentication(usuarioEncontrado);
-     }
-     throw getErroUsuarioNaoEncontrado();
+        String login = authentication.getName();
+        String senhaDigitada = authentication.getCredentials().toString();
+
+        Usuario usuarioEncontrado = usuarioService.obterPorEmail(login)
+                .orElse(usuarioService.obterPorLogin(login));
+        
+       /* if (login.contains("@")) {
+            usuarioEncontrado = usuarioService.obterPorEmail(login);
+        } else {
+            usuarioEncontrado = usuarioService.obterPorLogin(login);
+       }*/
+       
+        if (usuarioEncontrado == null) {
+            throw getErroUsuarioNaoEncontrado();
+        }
+
+        String senhaCriptografada = usuarioEncontrado.getSenha();
+
+        boolean senhasBatem = encoder.matches(senhaDigitada, senhaCriptografada);
+
+        if (senhasBatem) {
+            return new CustomAuthentication(usuarioEncontrado);
+        }
+        throw getErroUsuarioNaoEncontrado();
     }
 
     @Override
     public boolean supports(Class<?> authentication) {
-      return authentication.isAssignableFrom(UsernamePasswordAuthenticationToken.class);
+        return authentication.isAssignableFrom(UsernamePasswordAuthenticationToken.class);
     }
-    
-    private UsernameNotFoundException getErroUsuarioNaoEncontrado(){
+
+    private UsernameNotFoundException getErroUsuarioNaoEncontrado() {
         return new UsernameNotFoundException("Usuário e/ou senha incorretos");
     }
-    
+
 }

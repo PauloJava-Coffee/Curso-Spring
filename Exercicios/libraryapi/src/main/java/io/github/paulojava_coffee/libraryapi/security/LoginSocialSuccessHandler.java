@@ -39,7 +39,7 @@ public class LoginSocialSuccessHandler extends SavedRequestAwareAuthenticationSu
         OAuth2AuthenticationToken oAuth2AuthenticationToken = (OAuth2AuthenticationToken) authentication;
         OAuth2User oAuth2User = oAuth2AuthenticationToken.getPrincipal();
         String email = oAuth2User.getAttribute("email");
-        Usuario usuario = usuarioService.obterPorEmail(email);
+        Usuario usuario = usuarioService.obterPorEmail(email).get();
         if (usuario == null) {
            usuario =  cadastrarUsuarioNaBase(email);
         }
