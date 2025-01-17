@@ -9,6 +9,7 @@ import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
+import io.github.paulojava_coffee.libraryapi.security.JwtCustomAuthenticatioFilter;
 import io.github.paulojava_coffee.libraryapi.security.LoginSocialSuccessHandler;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
@@ -28,6 +29,7 @@ import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.server.authorization.config.annotation.web.configuration.OAuth2AuthorizationServerConfiguration;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
+import org.springframework.security.oauth2.server.resource.web.BearerTokenAuthenticationFilter;
 import org.springframework.security.web.SecurityFilterChain;
 
 /**
@@ -41,7 +43,8 @@ public class SecurityConfiguration {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http,
-            LoginSocialSuccessHandler successHandler
+            LoginSocialSuccessHandler successHandler,
+            JwtCustomAuthenticatioFilter filter
     ) throws Exception {
         return http.csrf(AbstractHttpConfigurer::disable)
                 .formLogin(configurer -> {
@@ -60,6 +63,7 @@ public class SecurityConfiguration {
                             .successHandler(successHandler);
                 })
                 .oauth2ResourceServer(oAuth2Rs -> oAuth2Rs.jwt(Customizer.withDefaults()))
+                .addFilterAfter(filter, BearerTokenAuthenticationFilter.class)
                 .build();
     }
 
