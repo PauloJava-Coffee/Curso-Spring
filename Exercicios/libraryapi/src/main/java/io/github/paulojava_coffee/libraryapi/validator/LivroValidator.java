@@ -39,11 +39,9 @@ public class LivroValidator {
         if (livro.getId() == null) {
             return resultado.isPresent();
         }
-
         return resultado.map(Livro::getId)
                 .stream()
                 .anyMatch(id -> !id.equals(livro.getId()));
-
     }
 
     private boolean isPrecoObrigatorio(Livro livro) {

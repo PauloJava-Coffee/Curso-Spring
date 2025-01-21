@@ -96,6 +96,7 @@ public class AuthorizationServerConfi {
                 .build();
     }
 
+    //Customizando dados doo token token
     @Bean
     public OAuth2TokenCustomizer<JwtEncodingContext> tokenCustomizer() {
 
