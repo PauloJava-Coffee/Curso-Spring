@@ -8,6 +8,7 @@ import io.github.paulojava_coffee.libraryapi.model.Client;
 import io.github.paulojava_coffee.libraryapi.service.ClientService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -25,6 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("clients")
+@Slf4j
 public class ClientController {
     
     private final PasswordEncoder encoder;
@@ -34,6 +36,7 @@ public class ClientController {
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("permitAll()")
     public void salvar(@RequestBody Client entity) {
+        log.info("Registrando novo client: {} com o scope: {}", entity.getClientId(), entity.getScope());
         entity.setClientSecret(encoder.encode(entity.getClientSecret()));
         service.salvar(entity);
     }

@@ -60,6 +60,8 @@ public class AutorController implements GenericController {
         @ApiResponse(responseCode = "409", description = "Autor ja cadastrado")
     })
     public ResponseEntity<Object> salvar(@RequestBody @Valid AutorDTO dto, Authentication athentication) {
+        
+        log.info("Novo autor: {}", dto.nome());
         /*  
         UserDetails usuarioLogado = (UserDetails) athentication.getPrincipal();
         Usuario usuatio = securityService.obterUsuarioLogado();*/
@@ -104,6 +106,7 @@ public class AutorController implements GenericController {
         @ApiResponse(responseCode = "400", description = "Autor possui livro cadastrado"),
         @ApiResponse(responseCode = "404", description = "Autor não encotrado"),})
     public ResponseEntity<Object> deletarAutor(@PathVariable String id) {
+        log.info("Deleetando autor de ID: {}", id);
         try {
             var optionalAutor = service.findById(UUID.fromString(id));
             if (optionalAutor.isPresent()) {
