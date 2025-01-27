@@ -34,12 +34,6 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         Usuario usuarioEncontrado = usuarioService.obterPorEmail(login)
                 .orElse(usuarioService.obterPorLogin(login));
         
-       /* if (login.contains("@")) {
-            usuarioEncontrado = usuarioService.obterPorEmail(login);
-        } else {
-            usuarioEncontrado = usuarioService.obterPorLogin(login);
-       }*/
-       
         if (usuarioEncontrado == null) {
             throw getErroUsuarioNaoEncontrado();
         }

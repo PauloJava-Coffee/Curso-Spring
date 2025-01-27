@@ -41,6 +41,15 @@ public class UsuarioService {
         return repository.findByEmail(email);
     }
     
+    
+    public boolean existsByEmail(String email){
+        return repository.existsByEmail(email);
+    }
+    
+    public boolean existsByLogin(String login){
+        return repository.existsByLogin(login);
+    }
+    
     /*public void deletAll(){ 
         repository.deleteAll();
     }*/

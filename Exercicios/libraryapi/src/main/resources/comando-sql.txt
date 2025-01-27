@@ -31,3 +31,19 @@ senha varchar(300) not null,
 roles varchar[],
 email varchar(150) not null
 );
+
+create table client(
+id uuid not null primary key
+client_id varchar(150) not null unique,
+client_secret varchar(400) not null,
+redirect_uri varchar(200)
+scope varchar(50)
+
+);
+
+
+//GERAR ARQUIVO JAR
+-- mvnw clean package -DskipTests
+
+/RODAR APLICAÇÃO
+-- java -jar .\target\libraryapi-0.0.1-SNAPSHOT.jar  <-- 'CAMINHO PARA O ARQUIVO JAR'

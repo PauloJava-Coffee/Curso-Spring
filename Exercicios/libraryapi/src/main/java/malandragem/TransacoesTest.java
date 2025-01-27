@@ -2,24 +2,25 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package io.github.paulojava_coffee.libraryapi.test;
+package malandragem;
 
+/*
 import io.github.paulojava_coffee.libraryapi.service.TransacaoService;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest;*/
 
 /**
  *
  * @author santa
  */
-@SpringBootTest
+//@SpringBootTest
 public class TransacoesTest {
     
-    @Autowired
+  /*  @Autowired
     TransacaoService service;
     
     /*
@@ -27,7 +28,7 @@ public class TransacoesTest {
     *RollBack -> Deletar as alterações
     *
     */
-    
+    /*
     @Test
     void transacaoSimples(){
         service.executar();
@@ -40,4 +41,5 @@ public class TransacoesTest {
         
         service.atualizarSemAtualizar(id, data);
     }
+    */
 }

@@ -6,3 +6,9 @@ docker run --name pgadmin4  -p 15432:80  -e PGADMIN_DEFAULT_EMAIL=admin@admin.co
 
 #Criando network 
 docker network create library-network
+
+
+docker run --name libraryapi-prod -e DATASOURCE_URL=jdbc:postgresql://librarydb-prod:5432/library -e DATASOURCE_USERNAME=postgresprod -e DATASOURCE_PASSWORD=postgresprod -e GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_SECRET}  -e GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_ID} --network library-network -d -p 8080:8080 -p 9090:9090 cursospring/library
+
+gerar arquivo jar
+./mvn clean package -DskipTests

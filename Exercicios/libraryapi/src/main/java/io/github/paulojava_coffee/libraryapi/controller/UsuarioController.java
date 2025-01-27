@@ -10,6 +10,7 @@ import io.github.paulojava_coffee.libraryapi.model.Usuario;
 import io.github.paulojava_coffee.libraryapi.repository.AutorRepository;
 import io.github.paulojava_coffee.libraryapi.repository.LivroRepository;
 import io.github.paulojava_coffee.libraryapi.service.UsuarioService;
+import io.github.paulojava_coffee.libraryapi.validator.UsuarioValidator;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -34,14 +35,15 @@ public class UsuarioController {
 
     private final UsuarioService service;
     private final UsuarioMapper mapper;
-    //  private final LivroRepository lr;
+    private final UsuarioValidator validator;
 
-    ///  private final AutorRepository ar;
+    
     
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("permitAll")
     public void salvar(@RequestBody @Valid UsuarioDTO dto) {
+        validator.validar(dto);
         var usuario = mapper.toEntity(dto);
         service.salvar(usuario);
     }

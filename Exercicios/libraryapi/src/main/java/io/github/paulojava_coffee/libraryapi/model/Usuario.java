@@ -39,6 +39,6 @@ public class Usuario {
     @Column(name = "roles", columnDefinition = "varchar[]")
     private List<String> roles;
    
-    @Column(nullable = false, length = 150)
+    @Column(nullable = false, unique = true ,length = 150)
     private String email;
 }

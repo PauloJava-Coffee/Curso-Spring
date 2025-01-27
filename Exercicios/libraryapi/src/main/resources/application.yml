@@ -1,14 +1,17 @@
 spring:
   application:
     name: libraryapi
+# SPRING_PROFILES_ACTIVE=PRODUCTION
+  profiles:
+    active: production
   output:
     ansi:
       enabled: ALWAYS
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/library
-    username: postgres
-    password: postgres
+    url: ${DATASOURCE_URL:jdbc:postgresql://localhost:5432/library}
+    username: ${DATASOURCE_USERNAME:postgres}
+    password: ${DATASOURCE_PASSWORD:postgres}
   jpa:
     show-sql: true
     properties:
@@ -20,7 +23,7 @@ spring:
       client:
         registration:
           google:
-            client-id: ${GOOGLE_CLIENTE_ID}
+            client-id: ${GOOGLE_CLIENT_ID}
             client-secret: ${GOOGLE_CLIENT_SECRET}
   springdoc:
     override-with-generic-response: false
@@ -54,5 +57,27 @@ management:
     # info
     # warn
     # error
-   
+    
+    
+# Production
+---
+    
+spring:
+  config:
+    activate:
+     on-profile: production
+  jpa:
+    show-sql: false
+  
+  
+    
+# Homolagacao
+---
+    
+spring:
+  config:
+    activate:
+     on-profile: Homolagacao
+  jpa:
+    show-sql: false
     

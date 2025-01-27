@@ -52,7 +52,7 @@ public class SecurityConfiguration {
                     configurer.loginPage("/login").permitAll();
                 })
                 // .formLogin(Customizer.withDefaults())
-                //.httpBasic(Customizer.withDefaults())
+                .httpBasic(Customizer.withDefaults())
                 .authorizeHttpRequests(authorize -> {
                     authorize.requestMatchers("/login").permitAll();
                     authorize.requestMatchers(HttpMethod.POST, "/usuarios/**").permitAll();

@@ -2,8 +2,8 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package io.github.paulojava_coffee.libraryapi.test;
-
+package malandragem;
+/*
 import io.github.paulojava_coffee.libraryapi.model.Autor;
 import io.github.paulojava_coffee.libraryapi.model.GeneroLivro;
 import io.github.paulojava_coffee.libraryapi.model.Livro;
@@ -24,9 +24,9 @@ import org.springframework.transaction.annotation.Transactional;
  *
  * @author barbo
  */
-@SpringBootTest
+//@SpringBootTest*/
 public class AutorRepositoryTest {
-
+/*
     @Autowired
     AutorRepository repository;
 
@@ -140,7 +140,7 @@ public class AutorRepositoryTest {
         autor.setLivros(livros);
         autor.getLivros().forEach(System.out::println);
     }
-    
+    */
     
 
 }

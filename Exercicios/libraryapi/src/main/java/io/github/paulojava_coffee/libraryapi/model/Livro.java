@@ -4,7 +4,6 @@
  */
 package io.github.paulojava_coffee.libraryapi.model;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
@@ -62,7 +61,7 @@ public class Livro {
          // cascade = CascadeType.ALL
     
     ) // Cascade PERSIST usando para salvar um novo autor ao salvar um novo livro
-    @JoinColumn
+    @JoinColumn(name = "id_autor")
     private Autor autor;
     
     @CreatedDate

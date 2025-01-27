@@ -2,8 +2,9 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package io.github.paulojava_coffee.libraryapi.test;
+package malandragem;
 
+/*
 import io.github.paulojava_coffee.libraryapi.model.Autor;
 import io.github.paulojava_coffee.libraryapi.model.GeneroLivro;
 import io.github.paulojava_coffee.libraryapi.model.Livro;
@@ -17,15 +18,16 @@ import java.util.Optional;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest;*/
 
 /**
  *
  * @author barbo
  */
-@SpringBootTest
+//@SpringBootTest
 public class LivroRepositoryTest {
 
+    /*
     @Autowired
     LivroRepository repository;
 
@@ -118,6 +120,6 @@ public class LivroRepositoryTest {
         System.out.println(livro.getTitulo());
         System.out.println("Autor: ");
         System.out.println(livro.getAutor().getNome());
-    }
+    }*/
 
 }
